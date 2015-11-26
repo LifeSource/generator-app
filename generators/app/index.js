@@ -30,7 +30,7 @@ module.exports = generators.Base.extend({
             "./src/client/fonts",
             "./src/client/images",
             "./src/client/styles",
-            "./src/server/",
+            "./src/server",
             "./src/server/apis",
             "./src/server/controllers",
             "./src/server/models",
@@ -47,8 +47,6 @@ module.exports = generators.Base.extend({
                 }
             });
          });
-
-
     },
 
     default: function () {
@@ -56,7 +54,25 @@ module.exports = generators.Base.extend({
     },
 
     writing: function () {
-        this.log("writing");
+
+        var gn = this;
+
+        var templatesToCopy = [
+            { name: "json/_package.json", path: "./package.json" },
+            { name: "json/_bower.json", path: "./bower.json" },
+            { name: "settings/_.bowerrc", path: "./.bowerrc" },
+            { name: "settings/_.jshintrc", path: "./.jshintrc" },
+            { name: "settings/_.editorconfig", path: "./.editorconfig" },
+            { name: "js/_config.js", path: "./config.js"},
+            { name: "js/_gulpfile.js", path: "./gulpfile.js"},
+            { name: "js/_server.js", path: "./src/server/server.js"},
+            { name: "js/_app.js", path: "./src/client/app/app.js"},
+            { name: "_index.html", path: "./src/client/index.html"}
+        ];
+
+        templatesToCopy.forEach(function (element, index, array) {
+            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path))
+        });
     },
 
     conflicts: function () {
