@@ -1,0 +1,10 @@
+{
+  "name": "generator-jsweb",
+  "files": [
+    "geneators/app"
+  ],
+  "devDependencies": {
+    "mkdirp": "^0.5.1",
+    "yeoman-generator": "^0.21.1"
+  }
+}
