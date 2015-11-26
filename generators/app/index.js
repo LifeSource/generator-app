@@ -22,7 +22,6 @@ module.exports = generators.Base.extend({
         var done = this.async();
         this.prompt({ type: "input", name: "appname", message: "Please enter your app name:", default: this.appname },
             function (answers) {
-                this.log(answers);
                 done();
             }.bind(this));
     },
@@ -34,6 +33,9 @@ module.exports = generators.Base.extend({
             "./dist",
             "./tests",
             "./src/client",
+            "./src/client/app",
+            "./src/client/app/core",
+            "./src/client/app/home",
             "./src/client/css",
             "./src/client/fonts",
             "./src/client/images",
@@ -46,13 +48,14 @@ module.exports = generators.Base.extend({
             "./src/server/routes",
         ];
 
+        gn.log("\nCreating application folders:\n");
         directoriesToMake.forEach(function (element, index, array) {
 
             mkdirp(element, function (err) {
                 if (err) {
                     gn.log(err);
                 } else {
-                    gn.log(element + " folder created.");
+                    gn.log("\t" + element + " folder created.");
                 }
             });
          });
@@ -81,16 +84,25 @@ module.exports = generators.Base.extend({
         ];
 
         if (this.options.aurelia) {
-            templatesToCopy.push({ name: "js/_main.js", path: "./src/client/main.js"});
-            templatesToCopy.push({ name: "js/_aureliaConfig.js", path: "./config.js"});
-            templatesToCopy.push({ name: "html/_aureliaIndex.html", path: "./src/client/index.html"});
+            templatesToCopy.push(
+                { name: "js/_aureliaConfig.js", path: "./config.js"},
+                { name: "js/_main.js", path: "./src/client/main.js"},
+                { name: "js/_aureliaApp.js", path: "./src/client/app/app.js"},
+                { name: "js/_home.js", path: "./src/client/home/home.js"},
+                { name: "html/_app.html", path: "./src/client/app/app.html"},
+                { name: "html/_home.html", path: "./src/client/home/home.html"},
+                { name: "html/_aureliaIndex.html", path: "./src/client/index.html"}
+            );
         } else {
-            templatesToCopy.push({ name: "js/_config.js", path: "./config.js"});
-            templatesToCopy.push({ name: "html/_index.html", path: "./src/client/index.html"});
+            templatesToCopy.push(
+                { name: "js/_config.js", path: "./config.js"},
+                { name: "html/_index.html", path: "./src/client/index.html"}
+            );
         }
 
+        gn.log("\nCreating template files:\n");
         templatesToCopy.forEach(function (element, index, array) {
-            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path));
+            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path), { title: gn.appname });
         });
     },
 
