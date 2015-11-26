@@ -9,7 +9,7 @@ module.exports = generators.Base.extend({
     },
 
     initializing: function () {
-        this.log("initializing");
+        // Initialization
     },
 
     prompting: function () {
@@ -32,6 +32,7 @@ module.exports = generators.Base.extend({
             "./src/client/fonts",
             "./src/client/images",
             "./src/client/styles",
+            "./src/client/tests",
             "./src/server",
             "./src/server/apis",
             "./src/server/controllers",
@@ -52,7 +53,7 @@ module.exports = generators.Base.extend({
     },
 
     default: function () {
-        this.log("default");
+        // Default queue
     },
 
     writing: function () {
@@ -67,9 +68,12 @@ module.exports = generators.Base.extend({
             { name: "settings/_.editorconfig", path: "./.editorconfig" },
             { name: "js/_config.js", path: "./config.js"},
             { name: "js/_gulpfile.js", path: "./gulpfile.js"},
+            { name: "js/_karmaconf.js", path: "./karmaconf.js"},
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_app.js", path: "./src/client/app/app.js"},
             { name: "html/_index.html", path: "./src/client/index.html"}
+            { name: "styles/_layout.styl", path: "./src/client/styles/layout.styl"}
+            { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
         ];
 
         templatesToCopy.forEach(function (element, index, array) {
@@ -78,7 +82,7 @@ module.exports = generators.Base.extend({
     },
 
     conflicts: function () {
-        this.log("conflicts");
+        // Conflicts resolution
     },
 
     install: function () {
@@ -91,7 +95,7 @@ module.exports = generators.Base.extend({
     },
 
     end: function () {
-        this.log("end");
+        // Generation completion
     }
 
 });
