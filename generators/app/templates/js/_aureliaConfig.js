@@ -42,15 +42,11 @@ module.exports = function () {
     	siteCss: css + "site.css",
     	// JavaScripts
     	allJs: [
-    		clientApp + "**/*.js",
-    		client + "**/*.js",
     		root + "*.js"
     	],
     	js: [
-    		clientApp + "**/*.module.js",
-    		clientApp + "**/*.service.js",
-    		clientApp + "**/*.js",
-    		client + "**/*.js",
+            jspmPackages + "system.js",
+    		client + "config*.js"
     	],
     	// Optimized files
     	optimized: {

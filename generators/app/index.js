@@ -6,6 +6,12 @@ module.exports = generators.Base.extend({
 
     constructor: function () {
         generators.Base.apply(this, arguments);
+        this.option("aurelia", {
+            desc: "Uses the Aurelia development setup.",
+            alias: "au",
+            type: String,
+            defaults: "aurelia"
+        });
     },
 
     initializing: function () {
@@ -66,18 +72,25 @@ module.exports = generators.Base.extend({
             { name: "settings/_.bowerrc", path: "./.bowerrc" },
             { name: "settings/_.jshintrc", path: "./.jshintrc" },
             { name: "settings/_.editorconfig", path: "./.editorconfig" },
-            { name: "js/_config.js", path: "./config.js"},
             { name: "js/_gulpfile.js", path: "./gulpfile.js"},
             { name: "js/_karmaconf.js", path: "./karmaconf.js"},
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_app.js", path: "./src/client/app/app.js"},
-            { name: "html/_index.html", path: "./src/client/index.html"}
-            { name: "styles/_layout.styl", path: "./src/client/styles/layout.styl"}
+            { name: "styles/_layout.styl", path: "./src/client/styles/layout.styl"},
             { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
         ];
 
+        if (this.options.aurelia) {
+            templatesToCopy.push({ name: "js/_main.js", path: "./src/client/main.js"});
+            templatesToCopy.push({ name: "js/_aureliaConfig.js", path: "./config.js"});
+            templatesToCopy.push({ name: "html/_aureliaIndex.html", path: "./src/client/index.html"});
+        } else {
+            templatesToCopy.push({ name: "js/_config.js", path: "./config.js"});
+            templatesToCopy.push({ name: "html/_index.html", path: "./src/client/index.html"});
+        }
+
         templatesToCopy.forEach(function (element, index, array) {
-            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path))
+            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path));
         });
     },
 
@@ -90,12 +103,12 @@ module.exports = generators.Base.extend({
         this.log("Installing packages:\n");
 
         this.npmInstall("", function () {
-            gn.log("\nFinished installing packages");
+            gn.log("\nFinished installing packages ... \n");
         });
     },
 
     end: function () {
-        // Generation completion
+        this.log("\n\tPlease run 'gulp serve-dev' to start the development environment or 'gulp' for gulp task listings.");
     }
 
 });
