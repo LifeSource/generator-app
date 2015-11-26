@@ -14,6 +14,7 @@ module.exports = function () {
     	build = root + "build/",
     	temp = root + "temp/",
     	nodeModules = root + "node_modules/",
+        jspmPackages = root + "jspm_packages/",
     	bowerComponents = root + "bower_components/",
     	ignore = [nodeModules, bowerComponents];
 

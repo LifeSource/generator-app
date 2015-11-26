@@ -25,6 +25,8 @@ module.exports = generators.Base.extend({
 
         var gn = this;
         var directoriesToMake = [
+            "./dist",
+            "./tests",
             "./src/client",
             "./src/client/css",
             "./src/client/fonts",
@@ -67,7 +69,7 @@ module.exports = generators.Base.extend({
             { name: "js/_gulpfile.js", path: "./gulpfile.js"},
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_app.js", path: "./src/client/app/app.js"},
-            { name: "_index.html", path: "./src/client/index.html"}
+            { name: "html/_index.html", path: "./src/client/index.html"}
         ];
 
         templatesToCopy.forEach(function (element, index, array) {
@@ -80,7 +82,12 @@ module.exports = generators.Base.extend({
     },
 
     install: function () {
-        this.log("install");
+        var gn = this;
+        this.log("Installing packages:\n");
+
+        this.npmInstall("", function () {
+            gn.log("\nFinished installing packages");
+        });
     },
 
     end: function () {
