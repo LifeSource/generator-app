@@ -11,16 +11,18 @@ module.exports = generators.Base.extend({
 
     constructor: function () {
 
-        var options = {
-            au: { desc: "Uses the Aurelia development setup.", alias: "au", type: String},
-            ng: { desc: "Uses the Angular development setup.", alias: "ng", type: String}
-        };
-
         generators.Base.apply(this, arguments);
 
-        this.option("aurelia", options.au);
+        var options = {
+            au: { desc: "Uses the Aurelia development setup.", type: String},
+            ng: { desc: "Uses the Angular development setup.", type: String}
+        };
+
         this.argument('appName', { type: String, required: false });
         this.appName = _.camelCase(this.appName);
+
+        this.option("aurelia", options.au);
+        this.option("angular", options.ng);
     },
 
     prompting: function () {
@@ -31,16 +33,18 @@ module.exports = generators.Base.extend({
 
         var done = this.async();
 
-        var prompt = {
+        var prompts = {
             type: "input",
-            name: "appname",
+            name: "appName",
             message: "Please enter your app name:",
             default: this.appName || path.basename(process.cwd())
         };
 
-        this.prompt(prompt, function (answers) {
+        this.prompt(prompts, function (answers) {
+            this.log("answers.appName: ", answers.appName);
             this.appName = answers.appName;
             this.appName = this.appName || path.basename(process.cwd());
+            this.log("this.appName: ", this.appName);
             done();
         }.bind(this));
     },
@@ -102,7 +106,7 @@ module.exports = generators.Base.extend({
             { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
         ];
 
-        if (this.options.aurelia) {
+        if (gn.options.aurelia) {
             templatesToCopy.push(
                 { name: "js/_aureliaConfig.js", path: "./config.js"},
                 { name: "js/_main.js", path: "./src/client/main.js"},
