@@ -1,4 +1,9 @@
 var generators  = require("yeoman-generator"),
+    _ = require("lodash"),
+    util = require('util'),
+    path = require('path'),
+    yosay = require('yosay'),
+    chalk = require('chalk'),
     mkdirp = require("mkdirp"),
     config = require("../../config")();
 
@@ -6,27 +11,44 @@ module.exports = generators.Base.extend({
 
     constructor: function () {
         generators.Base.apply(this, arguments);
-        this.option("aurelia", {
-            desc: "Uses the Aurelia development setup.",
-            alias: "au",
-            type: String,
-            defaults: "aurelia"
-        });
-    },
 
-    initializing: function () {
-        // Initialization
+        var options = {
+            au: { desc: "Uses the Aurelia development setup.", alias: "au", type: String},
+            ng: { desc: "Uses the Angular development setup.", alias: "ng", type: String}
+        };
+
+        this.option("aurelia", options.au);
+
+        this.argument('appName', { type: String, required: false });
+        this.appName = _.camelCase(this.appName);
+
+    //    this.appname = this._.camelize(this._.slugify(this._.humanize(this.appname)));
+
     },
 
     prompting: function () {
+
+        if (this.appName) {
+            return;
+        }
+
         var done = this.async();
-        this.prompt({ type: "input", name: "appname", message: "Please enter your app name:", default: this.appname },
-            function (answers) {
-                done();
-            }.bind(this));
+
+        var prompt = {
+            type: "input",
+            name: "appname",
+            message: "Please enter your app name:",
+            default: this.appName || path.basename(process.cwd())
+        };
+
+        this.prompt(prompt, function (answers) {
+            this.appName = answers.appName;
+            this.appName = this.appName || path.basename(process.cwd());
+            done();
+        }.bind(this));
     },
 
-    configuring: function () {
+    scaffordFolders: function () {
 
         var gn = this;
         var directoriesToMake = [
@@ -48,9 +70,9 @@ module.exports = generators.Base.extend({
             "./src/server/routes",
         ];
 
-        gn.log("\nCreating application folders:\n");
-        directoriesToMake.forEach(function (element, index, array) {
+        gn.log("Creating application folders and template files:\n");
 
+        directoriesToMake.forEach(function (element, index, array) {
             mkdirp(element, function (err) {
                 if (err) {
                     gn.log(err);
@@ -61,11 +83,11 @@ module.exports = generators.Base.extend({
          });
     },
 
-    default: function () {
-        // Default queue
-    },
+    packageFiles: function () {
 
-    writing: function () {
+        var context = {
+            appName: this.appName
+        };
 
         var gn = this;
 
@@ -100,26 +122,17 @@ module.exports = generators.Base.extend({
             );
         }
 
-        gn.log("\nCreating template files:\n");
         templatesToCopy.forEach(function (element, index, array) {
-            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path), { title: gn.appname });
+            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path), { appName: gn.appName });
         });
-    },
-
-    conflicts: function () {
-        // Conflicts resolution
     },
 
     install: function () {
-        var gn = this;
-        this.log("Installing packages:\n");
-
-        this.npmInstall("", function () {
-            gn.log("\nFinished installing packages ... \n");
-        });
+        this.installDependencies();
     },
 
     end: function () {
+        this.log("----->>> Mission Accomplished!");
         this.log("\n\tPlease run 'gulp serve-dev' to start the development environment or 'gulp' for gulp task listings.");
     }
 

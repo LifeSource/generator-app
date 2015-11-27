@@ -1,9 +1,8 @@
 var gulp = require("gulp"),
-    args = require("yargs").argv,
     del = require("del"),
-    browserSync = require("browser-sync"),
     path = require("path"),
-    runSequence = require("run-sequence"),
+    args = require("yargs").argv,
+    browserSync = require("browser-sync"),
     $ = require("gulp-load-plugins")({lazy: true});
 
 var config = require("./config")();
@@ -99,6 +98,44 @@ gulp.task("inject", ["wiredep", "styles", "templatecache"], function () {
     	.pipe(gulp.dest(config.client));
 });
 
+/**
+ * Run the spec runner
+ * @return {Stream}
+ */
+gulp.task('serve-specs', ['build-specs'], function(done) {
+    log('run the spec runner');
+    serve(true /* isDev */, true /* specRunner */);
+    done();
+});
+
+/**
+ * Inject all the spec files into the specs.html
+ * @return {Stream}
+ */
+gulp.task('build-specs', ['templatecache'], function(done) {
+    log('building the spec runner');
+
+    var wiredep = require('wiredep').stream;
+    var templateCache = config.temp + config.templateCache.file;
+    var options = config.getWiredepDefaultOptions();
+    var specs = config.specs;
+
+    if (args.startServers) {
+        specs = [].concat(specs, config.serverIntegrationSpecs);
+    }
+    options.devDependencies = true;
+
+    return gulp
+        .src(config.specRunner)
+        .pipe(wiredep(options))
+        .pipe(inject(config.js, '', config.jsOrder))
+        .pipe(inject(config.testlibraries, 'testlibraries'))
+        .pipe(inject(config.specHelpers, 'spechelpers'))
+        .pipe(inject(specs, 'specs', ['**/*']))
+        .pipe(inject(templateCache, 'templates'))
+        .pipe(gulp.dest(config.client));
+});
+
 gulp.task("optimize", ["inject", "fonts", "images"], function () {
     log("*** Optimizing the javascripts, css and html");
     var assets = $.useref.assets({ searchPath: config.root });
@@ -150,6 +187,26 @@ gulp.task("bump", function () {
     return gulp.src(config.packages)
     	.pipe($.bump(options))
     	.pipe(gulp.dest(config.root));
+});
+
+/**
+ * Run specs once and exit
+ * To start servers and run midway specs as well:
+ *    gulp test --startServers
+ * @return {Stream}
+ */
+gulp.task('test', ['lint', 'templatecache'], function(done) {
+    startTests(true /*singleRun*/ , done);
+});
+
+/**
+ * Run specs and wait.
+ * Watch for file changes and re-run tests on each change
+ * To start servers and run midway specs as well:
+ *    gulp autotest --startServers
+ */
+gulp.task('autotest', function(done) {
+    startTests(false /*singleRun*/ , done);
 });
 
 gulp.task("serve-build", ["optimize"], function (isDev) {
@@ -238,6 +295,47 @@ function startBrowserSync(isDev) {
     };
 
     browserSync(options);
+}
+
+function startTests(singleRun, done) {
+    var child;
+    var excludeFiles = [];
+    var fork = require('child_process').fork;
+    var karma = require('karma').server;
+    var serverSpecs = config.serverIntegrationSpecs;
+
+    if (args.startServers) {
+        log('Starting servers');
+        var savedEnv = process.env;
+        savedEnv.NODE_ENV = 'dev';
+        savedEnv.PORT = 8888;
+        child = fork(config.nodeServer);
+    } else {
+        if (serverSpecs && serverSpecs.length) {
+            excludeFiles = serverSpecs;
+        }
+    }
+
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
+    }, karmaCompleted);
+
+    ////////////////
+
+    function karmaCompleted(karmaResult) {
+        log('Karma completed');
+        if (child) {
+            log('shutting down the child process');
+            child.kill();
+        }
+        if (karmaResult === 1) {
+            done('karma: tests failed with code ' + karmaResult);
+        } else {
+            done();
+        }
+    }
 }
 
 function clean(path, done) {

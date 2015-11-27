@@ -13,6 +13,10 @@ module.exports = function () {
     	server = src + "server/",
     	build = root + "build/",
     	temp = root + "temp/",
+        report = root + "report/",
+        specRunnerFile = "specs.html",
+        wiredep = require('wiredep'),
+        bowerFiles = wiredep({devDependencies: true})['js'], // jshint ignore:line
     	nodeModules = root + "node_modules/",
         jspmPackages = root + "jspm_packages/",
     	bowerComponents = root + "bower_components/",
@@ -27,6 +31,7 @@ module.exports = function () {
     	src: src,
     	temp: temp,
     	build: build,
+        report: report,
     	css: css,
     	fonts: bowerComponents + "font-awesome/fonts/**/*.*",
     	html: clientApp + "**/*.html",
@@ -75,7 +80,31 @@ module.exports = function () {
     		"./bower.json"
     	],
     	// Browser Sync
-    	browserReloadDelay: 1000
+    	browserReloadDelay: 1000,
+        /**
+         * specs.html, our HTML spec runner
+         */
+        specRunner: client + specRunnerFile,
+        specRunnerFile: specRunnerFile,
+
+        /**
+         * The sequence of the injections into specs.html:
+         *  1 testlibraries
+         *      mocha setup
+         *  2 bower
+         *  3 js
+         *  4 spechelpers
+         *  5 specs
+         *  6 templates
+         */
+        testlibraries: [
+            nodeModules + '/mocha/mocha.js',
+            nodeModules + '/chai/chai.js',
+            nodeModules + '/sinon-chai/lib/sinon-chai.js'
+        ],
+        specHelpers: [client + 'test-helpers/*.js'],
+        specs: [clientApp + '**/*.spec.js'],
+        serverIntegrationSpecs: [client + '/tests/server-integration/**/*.spec.js']
     };
 
     config.getWiredepDefaultOptions = function () {
@@ -88,5 +117,38 @@ module.exports = function () {
     	return options;
     };
 
+    /**
+     * karma settings
+     */
+    config.karma = getKarmaOptions();
+
     return config;
+
+    ////////////////
+
+    function getKarmaOptions() {
+        var options = {
+            files: [].concat(
+                bowerFiles,
+                config.specHelpers,
+                clientApp + '**/*.module.js',
+                clientApp + '**/*.js',
+                temp + config.templateCache.file,
+                config.serverIntegrationSpecs
+            ),
+            exclude: [],
+            coverage: {
+                dir: report + 'coverage',
+                reporters: [
+                    // reporters not supporting the `file` property
+                    {type: 'html', subdir: 'report-html'},
+                    {type: 'lcov', subdir: 'report-lcov'},
+                    {type: 'text-summary'} //, subdir: '.', file: 'text-summary.txt'}
+                ]
+            },
+            preprocessors: {}
+        };
+        options.preprocessors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
+        return options;
+    }
 };
