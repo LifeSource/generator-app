@@ -98,6 +98,7 @@ module.exports = generators.Base.extend({
             { name: "settings/_.bowerrc", path: "./.bowerrc" },
             { name: "settings/_.jshintrc", path: "./.jshintrc" },
             { name: "settings/_.editorconfig", path: "./.editorconfig" },
+            { name: "settings/_.README.md", path: "./README.md" },
             { name: "js/_gulpfile.js", path: "./gulpfile.js"},
             { name: "js/_karmaconf.js", path: "./karmaconf.js"},
             { name: "js/_server.js", path: "./src/server/server.js"},
