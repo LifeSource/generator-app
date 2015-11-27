@@ -10,20 +10,17 @@ var generators  = require("yeoman-generator"),
 module.exports = generators.Base.extend({
 
     constructor: function () {
-        generators.Base.apply(this, arguments);
 
         var options = {
             au: { desc: "Uses the Aurelia development setup.", alias: "au", type: String},
             ng: { desc: "Uses the Angular development setup.", alias: "ng", type: String}
         };
 
-        this.option("aurelia", options.au);
+        generators.Base.apply(this, arguments);
 
+        this.option("aurelia", options.au);
         this.argument('appName', { type: String, required: false });
         this.appName = _.camelCase(this.appName);
-
-    //    this.appname = this._.camelize(this._.slugify(this._.humanize(this.appname)));
-
     },
 
     prompting: function () {
@@ -132,7 +129,7 @@ module.exports = generators.Base.extend({
     },
 
     end: function () {
-        this.log("----->>> Mission Accomplished!");
+        this.log("\n----->>> Mission Accomplished! <<<-----");
         this.log("\n\tPlease run 'gulp serve-dev' to start the development environment or 'gulp' for gulp task listings.");
     }
 
