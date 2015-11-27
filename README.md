@@ -15,4 +15,10 @@ My custom yeoman generator for JavaScript web development with NodeJS and popula
 ##### Running the generator
 ```
     3. yo app [name] [--option] 
+
+    options: --aurelia, --angular (default)
 ```
+
+#### NOTE:
+
+If the ```--aurelia``` option is specified you need to do a ```jspm install aurelia-bootstrapper``` after the generator is completed to install the config files and the bootstrapper for Aurelia.
