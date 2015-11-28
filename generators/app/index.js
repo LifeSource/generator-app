@@ -103,6 +103,7 @@ module.exports = generators.Base.extend({
             { name: "js/_karmaconf.js", path: "./karmaconf.js"},
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_app.js", path: "./src/client/app/app.js"},
+            { name: "styles/_grid.styl", path: "./src/client/styles/grid.styl"},
             { name: "styles/_layout.styl", path: "./src/client/styles/layout.styl"},
             { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
         ];
@@ -112,9 +113,9 @@ module.exports = generators.Base.extend({
                 { name: "js/_aureliaConfig.js", path: "./config.js"},
                 { name: "js/_main.js", path: "./src/client/main.js"},
                 { name: "js/_aureliaApp.js", path: "./src/client/app/app.js"},
-                { name: "js/_home.js", path: "./src/client/home/home.js"},
+                { name: "js/_home.js", path: "./src/client/app/home/home.js"},
                 { name: "html/_app.html", path: "./src/client/app/app.html"},
-                { name: "html/_home.html", path: "./src/client/home/home.html"},
+                { name: "html/_home.html", path: "./src/client/app/home/home.html"},
                 { name: "html/_aureliaIndex.html", path: "./src/client/index.html"}
             );
         } else {
