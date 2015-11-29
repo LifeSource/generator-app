@@ -127,12 +127,12 @@ module.exports = generators.Base.extend({
         }
 
         templatesToCopy.forEach(function (element, index, array) {
-            gn.fs.copyTpl(gn.templatePath("~/template/" + element.name), gn.destinationPath(element.path), { appName: gn.appName });
+            gn.fs.copyTpl(gn.templatePath(element.name), gn.destinationPath(element.path), { appName: gn.appName });
         });
     },
 
     install: function () {
-        this.installDependencies();
+//        this.installDependencies();
     },
 
     end: function () {
