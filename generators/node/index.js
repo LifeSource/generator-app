@@ -95,6 +95,7 @@ module.exports = generators.Base.extend({
         var templatesToCopy = [
             { name: "json/_package.json", path: "./package.json" },
             { name: "json/_bower.json", path: "./bower.json" },
+            { name: "settings/_.babelrc", path: "./.babelrc" },
             { name: "settings/_.bowerrc", path: "./.bowerrc" },
             { name: "settings/_.jshintrc", path: "./.jshintrc" },
             { name: "settings/_.editorconfig", path: "./.editorconfig" },

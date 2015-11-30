@@ -2,7 +2,10 @@ var gulp = require("gulp"),
     del = require("del"),
     path = require("path"),
     args = require("yargs").argv,
+    babelify = require("babelify"),
+    browserify = require("browserify"),
     browserSync = require("browser-sync"),
+    source = require("vinyl-source-stream"),
     $ = require("gulp-load-plugins")({lazy: true});
 
 var config = require("./config")();
@@ -10,10 +13,29 @@ var config = require("./config")();
 gulp.task("default", ["help"]);
 gulp.task("help", $.taskListing);
 
+gulp.task("babel", ["concat"], function () {
+    log("Transpiling ES6 ---> ES5");
+    return browserify(config.transpiled + "all.js")
+        .transform(babelify)
+        .bundle()
+        .pipe(source("all.js"))
+        .pipe(gulp.dest(config.transpiled));
+});
+
+gulp.task("concat", ["clean-babel"], function () {
+    return gulp.src(config.js)
+        .pipe($.concat("all.js"))
+        .pipe(gulp.dest(config.transpiled));
+});
+
 gulp.task("clean", function (done) {
-    var path = [].concat(config.build, config.css);
+    var path = [].concat(config.build, config.css, config.transpiled);
     log("Cleaning: " + $.util.colors.blue(path));
-    del(path, done);
+    clean(path, done);
+});
+
+gulp.task("clean-babel", function (done) {
+    clean(config.transpiled + "**/*.*", done);
 });
 
 gulp.task("clean-fonts", function (done) {
@@ -80,14 +102,15 @@ gulp.task("templatecache", ["clean-code"], function () {
     	.pipe(gulp.dest(config.temp));
 });
 
-gulp.task("wiredep", function () {
+gulp.task("wiredep", ["babel"], function () {
     log("*** Wiring up bower css, js and custom js files into the index.html file");
     var wiredep = require("wiredep").stream,
     	options = config.getWiredepDefaultOptions();
 
     return gulp.src(config.index)
     	.pipe(wiredep(options))
-    	.pipe($.inject(gulp.src(config.js)))
+    	//.pipe($.inject(gulp.src(config.js)))
+    	.pipe($.inject(gulp.src(config.transpiledJS)))
     	.pipe(gulp.dest(config.client));
 });
 
@@ -213,7 +236,8 @@ gulp.task("serve-build", ["optimize"], function (isDev) {
     serve(false /* isDev */);
 });
 
-gulp.task("serve-dev", ["lint", "inject"], function () {
+//gulp.task("serve-dev", ["lint", "inject"], function () {
+gulp.task("serve-dev", ["inject"], function () {
     log("*** Serving up development environment");
     serve(true /* isDev */);
 });

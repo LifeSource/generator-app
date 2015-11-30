@@ -6,8 +6,8 @@ var config = require("../../config")();
 
 var path = {
     root: "./",
-    build: "./build/",
-    buildIndex: "./build/index.html",
+    build: "./dist/",
+    buildIndex: "./dist/index.html",
     client: "./src/client/",
     index: "./src/client/index.html"
 };
