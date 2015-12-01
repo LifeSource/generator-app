@@ -1,0 +1,16 @@
+{
+    "name": "<%= appName %>",
+    "version": "1.0.0",
+    "description": "<%= appName %>",
+    "authors": [],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "devDependencies": {
+    }
+}

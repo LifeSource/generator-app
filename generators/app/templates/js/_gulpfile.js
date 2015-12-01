@@ -265,7 +265,7 @@ function serve(isDev) {
     		}, config.browserReloadDelay);
     	})
     	.on("start", function () {
-    		console.log("*** nodemon started.");
+    		log("*** nodemon started.");
     		startBrowserSync(isDev);
     	})
     	.on("crash", function () {

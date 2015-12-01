@@ -23,6 +23,7 @@ gulp.task("babel", ["concat"], function () {
 });
 
 gulp.task("concat", ["clean-babel"], function () {
+    log("Concatenating all js file ready for transpiling.");
     return gulp.src(config.js)
         .pipe($.concat("all.js"))
         .pipe(gulp.dest(config.transpiled));
@@ -264,7 +265,7 @@ function serve(isDev) {
     		}, config.browserReloadDelay);
     	})
     	.on("start", function () {
-    		console.log("*** nodemon started.");
+    		log("*** nodemon started.");
     		startBrowserSync(isDev);
     	})
     	.on("crash", function () {
@@ -289,7 +290,7 @@ function startBrowserSync(isDev) {
     }
 
     if (isDev) {
-    	gulp.watch([config.styles], ["styles"])
+    	gulp.watch([config.styles, config.js], ["styles", "inject", browserSync.reload])
     		.on("change", function (event) { changeEvent(event); });
     } else {
     	gulp.watch([config.styles, config.js, config.html], ["optimize", browserSync.reload])
