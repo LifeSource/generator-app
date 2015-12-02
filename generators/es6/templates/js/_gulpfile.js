@@ -13,16 +13,16 @@ var config = require("./config")();
 gulp.task("default", ["help"]);
 gulp.task("help", $.taskListing);
 
-gulp.task("transpileJS", ["clean-babel"], function () {
-    log("Transpiling ES6 ----> ES5");
+gulp.task("concat", ["clean-babel"], function () {
+    log("Concatenating JS files for transpilation.");
     return gulp.src(config.js)
         .pipe($.concat("all.js"))
         .pipe(gulp.dest(config.client + "temp/"));
 });
 
-gulp.task("browserify", ["transpileJS"], function () {
-
-    return browserify(config.client + "temp/" + "all.js")
+gulp.task("browserify", ["concat"], function () {
+    log("Transpiling ES6 ----> ES5");
+    return browserify(config.client + "temp/" + "all.js", { read: false })
         .transform(babelify)
         .bundle()
         .pipe(source("all.js"))
@@ -30,18 +30,15 @@ gulp.task("browserify", ["transpileJS"], function () {
 });
 
 gulp.task("clean-babel", function (done) {
-    log("Cleaning out the transpiled files and folders...");
-    var paths = [].concat(config.transpiled + "**/*.js", config.client + "temp/**/*.js");
-
-    del(paths).then(function () {
-        log("Cleaning files and folders: " + paths);
-        done();
-    });
+    var paths = [].concat(
+        config.transpiled + "**/*.js",
+        config.client + "temp/**/*.js"
+    );
+    clean(paths, done);
 });
 
 gulp.task("clean", function (done) {
-    var path = [].concat(config.build, config.css, config.transpiled);
-    log("Cleaning: " + $.util.colors.blue(path));
+    var path = [].concat(config.build, config.css);
     clean(path, done);
 });
 
@@ -284,7 +281,6 @@ function serve(isDev) {
 
 // Utilities Functions
 
-
 function changeEvent(event) {
     var srcPattern = new RegExp('/.*(?=/' + config.source + ')/');
     log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
@@ -297,7 +293,9 @@ function startBrowserSync(isDev) {
     }
 
     if (isDev) {
-    	gulp.watch([config.styles, config.js], ["styles", "inject", browserSync.reload])
+    	gulp.watch([config.styles], ["styles"])
+    		.on("change", function (event) { changeEvent(event); });
+    	gulp.watch([config.js], ["wiredep"])
     		.on("change", function (event) { changeEvent(event); });
     } else {
     	gulp.watch([config.styles, config.js, config.html], ["optimize", browserSync.reload])
@@ -329,6 +327,46 @@ function startBrowserSync(isDev) {
     browserSync(options);
 }
 
+function startTests(singleRun, done) {
+    var child;
+    var excludeFiles = [];
+    var fork = require('child_process').fork;
+    var karma = require('karma').server;
+    var serverSpecs = config.serverIntegrationSpecs;
+
+    if (args.startServers) {
+        log('Starting servers');
+        var savedEnv = process.env;
+        savedEnv.NODE_ENV = 'dev';
+        savedEnv.PORT = 8888;
+        child = fork(config.nodeServer);
+    } else {
+        if (serverSpecs && serverSpecs.length) {
+            excludeFiles = serverSpecs;
+        }
+    }
+
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
+    }, karmaCompleted);
+
+    ////////////////
+
+    function karmaCompleted(karmaResult) {
+        log('Karma completed');
+        if (child) {
+            log('shutting down the child process');
+            child.kill();
+        }
+        if (karmaResult === 1) {
+            done('karma: tests failed with code ' + karmaResult);
+        } else {
+            done();
+        }
+    }
+}
 
 function clean(path, done) {
     del(path).then(function () {
