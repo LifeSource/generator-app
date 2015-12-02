@@ -17,22 +17,22 @@ gulp.task("concat", ["clean-babel"], function () {
     log("Concatenating JS files for transpilation.");
     return gulp.src(config.js)
         .pipe($.concat("all.js"))
-        .pipe(gulp.dest(config.client + "temp/"));
+        .pipe(gulp.dest(config.temp));
 });
 
 gulp.task("browserify", ["concat"], function () {
     log("Transpiling ES6 ----> ES5");
-    return browserify(config.client + "temp/" + "all.js", { read: false })
+    return browserify(config.temp + "all.js", { read: false })
         .transform(babelify)
         .bundle()
         .pipe(source("all.js"))
-        .pipe(gulp.dest(config.client + "transpiled/"));
+        .pipe(gulp.dest(config.transpiled));
 });
 
 gulp.task("clean-babel", function (done) {
     var paths = [].concat(
-        config.transpiled + "**/*.js",
-        config.client + "temp/**/*.js"
+        config.transpiled + "all.js",
+        config.temp + "all.js"
     );
     clean(paths, done);
 });
