@@ -13,30 +13,36 @@ var config = require("./config")();
 gulp.task("default", ["help"]);
 gulp.task("help", $.taskListing);
 
-gulp.task("babel", ["concat"], function () {
-    log("Transpiling ES6 ---> ES5");
-    return browserify(config.transpiled + "all.js")
+gulp.task("transpileJS", ["clean-babel"], function () {
+    log("Transpiling ES6 ----> ES5");
+    return gulp.src(config.js)
+        .pipe($.concat("all.js"))
+        .pipe(gulp.dest(config.client + "temp/"));
+});
+
+gulp.task("browserify", ["transpileJS"], function () {
+
+    return browserify(config.client + "temp/" + "all.js")
         .transform(babelify)
         .bundle()
         .pipe(source("all.js"))
-        .pipe(gulp.dest(config.transpiled));
+        .pipe(gulp.dest(config.client + "transpiled/"));
 });
 
-gulp.task("concat", ["clean-babel"], function () {
-    log("Concatenating all js file ready for transpiling.");
-    return gulp.src(config.js)
-        .pipe($.concat("all.js"))
-        .pipe(gulp.dest(config.transpiled));
+gulp.task("clean-babel", function (done) {
+    log("Cleaning out the transpiled files and folders...");
+    var paths = [].concat(config.transpiled + "**/*.js", config.client + "temp/**/*.js");
+
+    del(paths).then(function () {
+        log("Cleaning files and folders: " + paths);
+        done();
+    });
 });
 
 gulp.task("clean", function (done) {
     var path = [].concat(config.build, config.css, config.transpiled);
     log("Cleaning: " + $.util.colors.blue(path));
     clean(path, done);
-});
-
-gulp.task("clean-babel", function (done) {
-    clean(config.transpiled + "**/*.*", done);
 });
 
 gulp.task("clean-fonts", function (done) {
@@ -103,7 +109,7 @@ gulp.task("templatecache", ["clean-code"], function () {
     	.pipe(gulp.dest(config.temp));
 });
 
-gulp.task("wiredep", ["babel"], function () {
+gulp.task("wiredep", ["browserify"], function () {
     log("*** Wiring up bower css, js and custom js files into the index.html file");
     var wiredep = require("wiredep").stream,
     	options = config.getWiredepDefaultOptions();
@@ -111,7 +117,7 @@ gulp.task("wiredep", ["babel"], function () {
     return gulp.src(config.index)
     	.pipe(wiredep(options))
     	//.pipe($.inject(gulp.src(config.js)))
-    	.pipe($.inject(gulp.src(config.transpiledJS)))
+    	.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
     	.pipe(gulp.dest(config.client));
 });
 

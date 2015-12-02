@@ -41,7 +41,7 @@ module.exports = function () {
     	client: client,
     	clientApp: clientApp,
         transpiled: transpiled,
-        transpiledJS: [transpiled + "**/*.js"],
+        transpiledJS: transpiled + "**/*.js",
     	styles: styles + "**/*.styl",
     	server: server,
     	// Files

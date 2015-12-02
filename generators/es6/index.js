@@ -61,6 +61,7 @@ module.exports = generators.Base.extend({
             "./src/server/controllers",
             "./src/server/models",
             "./src/server/routes",
+            "./bower_components/"
         ];
 
         gn.log("Creating application folders and template files:\n");

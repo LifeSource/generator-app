@@ -12,7 +12,5 @@
         "tests"
     ],
     "devDependencies": {
-        "sinon": "http://sinonjs.org/releases/sinon-1.12.1.js",
-        "bardjs": "^0.1.4"
     }
 }
