@@ -13,35 +13,32 @@ var config = require("./config")();
 gulp.task("default", ["help"]);
 gulp.task("help", $.taskListing);
 
-gulp.task("transpileJS", ["clean-babel"], function () {
-    log("Transpiling ES6 ----> ES5");
+gulp.task("concat", ["clean-babel"], function () {
+    log("Concatenating JS files for transpilation.");
     return gulp.src(config.js)
         .pipe($.concat("all.js"))
-        .pipe(gulp.dest(config.client + "temp/"));
+        .pipe(gulp.dest(config.temp));
 });
 
-gulp.task("browserify", ["transpileJS"], function () {
-
-    return browserify(config.client + "temp/" + "all.js")
+gulp.task("browserify", ["concat"], function () {
+    log("Transpiling ES6 ----> ES5");
+    return browserify(config.temp + "all.js", { read: false })
         .transform(babelify)
         .bundle()
         .pipe(source("all.js"))
-        .pipe(gulp.dest(config.client + "transpiled/"));
+        .pipe(gulp.dest(config.transpiled));
 });
 
 gulp.task("clean-babel", function (done) {
-    log("Cleaning out the transpiled files and folders...");
-    var paths = [].concat(config.transpiled + "**/*.js", config.client + "temp/**/*.js");
-
-    del(paths).then(function () {
-        log("Cleaning files and folders: " + paths);
-        done();
-    });
+    var paths = [].concat(
+        config.transpiled + "all.js",
+        config.temp + "all.js"
+    );
+    clean(paths, done);
 });
 
 gulp.task("clean", function (done) {
-    var path = [].concat(config.build, config.css, config.transpiled);
-    log("Cleaning: " + $.util.colors.blue(path));
+    var path = [].concat(config.build, config.css);
     clean(path, done);
 });
 
@@ -109,7 +106,7 @@ gulp.task("templatecache", ["clean-code"], function () {
     	.pipe(gulp.dest(config.temp));
 });
 
-gulp.task("wiredep", ["babel"], function () {
+gulp.task("wiredep", ["browserify"], function () {
     log("*** Wiring up bower css, js and custom js files into the index.html file");
     var wiredep = require("wiredep").stream,
     	options = config.getWiredepDefaultOptions();
@@ -296,7 +293,9 @@ function startBrowserSync(isDev) {
     }
 
     if (isDev) {
-    	gulp.watch([config.styles, config.js], ["styles", "inject", browserSync.reload])
+    	gulp.watch([config.styles], ["styles"])
+    		.on("change", function (event) { changeEvent(event); });
+    	gulp.watch([config.js], ["wiredep"])
     		.on("change", function (event) { changeEvent(event); });
     } else {
     	gulp.watch([config.styles, config.js, config.html], ["optimize", browserSync.reload])
