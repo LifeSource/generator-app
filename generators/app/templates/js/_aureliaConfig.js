@@ -12,7 +12,8 @@ module.exports = function () {
     	images = client + "images/",
     	server = src + "server/",
     	build = root + "build/",
-    	temp = root + "temp/",
+    	temp = client + "temp/",
+        transpiled = client + "transpiled/",
         report = root + "report/",
         specRunnerFile = "specs.html",
         wiredep = require('wiredep'),
@@ -39,6 +40,8 @@ module.exports = function () {
     	images: images + "**/*.*",
     	client: client,
     	clientApp: clientApp,
+        transpiled: transpiled,
+        transpiledJS: transpiled + "**/*.js",
     	styles: styles + "**/*.styl",
     	server: server,
     	// Files

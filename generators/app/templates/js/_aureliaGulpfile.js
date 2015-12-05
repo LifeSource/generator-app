@@ -106,15 +106,15 @@ gulp.task("templatecache", ["clean-code"], function () {
     	.pipe(gulp.dest(config.temp));
 });
 
-gulp.task("wiredep", ["browserify"], function () {
+gulp.task("wiredep", function () {
     log("*** Wiring up bower css, js and custom js files into the index.html file");
     var wiredep = require("wiredep").stream,
     	options = config.getWiredepDefaultOptions();
 
     return gulp.src(config.index)
     	.pipe(wiredep(options))
-    	//.pipe($.inject(gulp.src(config.js)))
-    	.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
+    	.pipe($.inject(gulp.src(config.js)))
+    	//.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
     	.pipe(gulp.dest(config.client));
 });
 
@@ -297,8 +297,8 @@ function startBrowserSync(isDev) {
     if (isDev) {
     	gulp.watch([config.styles], ["styles"])
     		.on("change", function (event) { changeEvent(event); });
-    	gulp.watch([config.js], ["wiredep"])
-    		.on("change", function (event) { changeEvent(event); });
+    	// gulp.watch([config.js], ["wiredep"])
+    		// .on("change", function (event) { changeEvent(event); });
     } else {
     	gulp.watch([config.styles, config.js, config.html], ["optimize", browserSync.reload])
     		.on("change", function (event) { changeEvent(event); });

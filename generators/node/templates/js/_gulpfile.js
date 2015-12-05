@@ -236,6 +236,8 @@ gulp.task('autotest', function(done) {
     startTests(false /*singleRun*/ , done);
 });
 
+gulp.task("serve", ["serve-dev"]);
+
 gulp.task("serve-build", ["optimize"], function (isDev) {
     serve(false /* isDev */);
 });

@@ -69,6 +69,8 @@ module.exports = generators.Base.extend({
             "./src/server/controllers",
             "./src/server/models",
             "./src/server/routes",
+            "./bower_components/"
+
         ];
 
         gn.log("Creating application folders and template files:\n");
@@ -93,7 +95,6 @@ module.exports = generators.Base.extend({
         var gn = this;
 
         var templatesToCopy = [
-            { name: "json/_package.json", path: "./package.json" },
             { name: "json/_bower.json", path: "./bower.json" },
             { name: "settings/_.babelrc", path: "./.babelrc" },
             { name: "settings/_.bowerrc", path: "./.bowerrc" },
@@ -112,6 +113,7 @@ module.exports = generators.Base.extend({
 
         if (gn.options.aurelia) {
             templatesToCopy.push(
+                { name: "json/_aureiliaPackage.json", path: "./package.json" },
                 { name: "js/_aureliaConfig.js", path: "./config.js"},
                 { name: "js/_main.js", path: "./src/client/main.js"},
                 { name: "js/_aureliaApp.js", path: "./src/client/app/app.js"},
@@ -122,6 +124,7 @@ module.exports = generators.Base.extend({
             );
         } else {
             templatesToCopy.push(
+                { name: "json/_package.json", path: "./package.json" },
                 { name: "js/_config.js", path: "./config.js"},
                 { name: "html/_index.html", path: "./src/client/index.html"}
             );
@@ -133,7 +136,8 @@ module.exports = generators.Base.extend({
     },
 
     install: function () {
-        this.installDependencies();
+        //this.installDependencies();
+    //    this.npmInstall();
     },
 
     end: function () {
