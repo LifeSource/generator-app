@@ -23,6 +23,7 @@ module.exports = generators.Base.extend({
 
         this.option("aurelia", options.au);
         this.option("angular", options.ng);
+
     },
 
     prompting: function () {
@@ -70,18 +71,13 @@ module.exports = generators.Base.extend({
             "./src/server/models",
             "./src/server/routes",
             "./bower_components/"
-
         ];
 
         gn.log("Creating application folders and template files:\n");
 
         directoriesToMake.forEach(function (element, index, array) {
             mkdirp(element, function (err) {
-                if (err) {
-                    gn.log(err);
-                } else {
-                    gn.log("\t" + element + " folder created.");
-                }
+                (err) ? gn.log(err) :  gn.log("\t" + element + " folder created.");
             });
          });
     },
@@ -95,6 +91,7 @@ module.exports = generators.Base.extend({
         var gn = this;
 
         var templatesToCopy = [
+            { name: "json/_package.json", path: "./package.json" },
             { name: "json/_bower.json", path: "./bower.json" },
             { name: "settings/_.babelrc", path: "./.babelrc" },
             { name: "settings/_.bowerrc", path: "./.bowerrc" },
@@ -102,10 +99,8 @@ module.exports = generators.Base.extend({
             { name: "settings/_.editorconfig", path: "./.editorconfig" },
             { name: "settings/_.gitignore", path: "./.gitignore" },
             { name: "settings/_README.md", path: "./README.md" },
-            { name: "js/_gulpfile.js", path: "./gulpfile.js"},
-            { name: "js/_karmaconf.js", path: "./karmaconf.js"},
             { name: "js/_server.js", path: "./src/server/server.js"},
-            { name: "js/_app.js", path: "./src/client/app/app.js"},
+            { name: "js/_db.js", path: "./src/server/models/db.js"},
             { name: "styles/_grid.styl", path: "./src/client/styles/grid.styl"},
             { name: "styles/_layout.styl", path: "./src/client/styles/layout.styl"},
             { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
@@ -113,18 +108,30 @@ module.exports = generators.Base.extend({
 
         if (gn.options.aurelia) {
             templatesToCopy.push(
-                { name: "json/_aureiliaPackage.json", path: "./package.json" },
-                { name: "js/_aureliaConfig.js", path: "./config.js"},
-                { name: "js/_main.js", path: "./src/client/main.js"},
-                { name: "js/_aureliaApp.js", path: "./src/client/app/app.js"},
-                { name: "js/_home.js", path: "./src/client/app/home/home.js"},
-                { name: "html/_app.html", path: "./src/client/app/app.html"},
-                { name: "html/_home.html", path: "./src/client/app/home/home.html"},
-                { name: "html/_aureliaIndex.html", path: "./src/client/index.html"}
+                { name: "js/aurelia/_aureliaGulpfile.js", path: "./gulpfile.js"},
+                { name: "js/aurelia/_aureliaConfig.js", path: "./config.js"},
+                { name: "js/aurelia/_aureliaStartup.js", path: "./src/client/aurelia-startup.js"},
+                { name: "js/aurelia/_main.js", path: "./src/client/main.js"},
+                { name: "js/aurelia/_index.js", path: "./src/client/app/core/index.js"},
+                { name: "js/aurelia/_navMenu.js", path: "./src/client/app/core/navMenu.js"},
+                { name: "html/aurelia/_navMenu.html", path: "./src/client/app/core/navMenu.html"},
+                { name: "js/aurelia/_app.js", path: "./src/client/app/app.js"},
+                { name: "html/aurelia/_app.html", path: "./src/client/app/app.html"},
+                { name: "js/aurelia/_home.js", path: "./src/client/app/home/home.js"},
+                { name: "html/aurelia/_home.html", path: "./src/client/app/home/home.html"},
+                { name: "html/aurelia/_aureliaIndex.html", path: "./src/client/index.html"}
             );
-        } else {
+        } else if (gn.options.angular) {
             templatesToCopy.push(
-                { name: "json/_package.json", path: "./package.json" },
+                { name: "js/angular/_angularConfig.js", path: "./config.js"},
+                { name: "js/angular/_app.js", path: "./src/client/app/app.js"},
+                { name: "html/angular/_angularIndex.html", path: "./src/client/index.html"}
+            );
+        }
+        else {
+            templatesToCopy.push(
+                { name: "js/_app.js", path: "./src/client/app/app.js"},
+                { name: "js/_gulpfile.js", path: "./gulpfile.js"},
                 { name: "js/_config.js", path: "./config.js"},
                 { name: "html/_index.html", path: "./src/client/index.html"}
             );
@@ -136,13 +143,14 @@ module.exports = generators.Base.extend({
     },
 
     install: function () {
-        //this.installDependencies();
-    //    this.npmInstall();
+        if (this.options.aurelia || this.options.angular) {
+            this.installDependencies();
+        }
     },
 
     end: function () {
         this.log("\n----->>> Mission Accomplished! <<<-----");
-        this.log("\n\tPlease run 'gulp serve-dev' to start the development environment or 'gulp' for gulp task listings.");
+        this.log("\n\tPlease run 'gulp serve' to start the development environment or 'gulp' for gulp task listings.");
     }
 
 });

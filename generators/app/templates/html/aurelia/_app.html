@@ -1,0 +1,16 @@
+<template>
+    <div class="container">
+        <div class="navigation">
+            <header>
+                <h1><%= appName %></h1>
+                <nav-menu router.bind="router"></nav-menu>
+            </header>
+        </div>
+
+        <div class="main-content">
+            <router-view></router-view>
+        </div>
+
+        <footer><%= appName %> &copy; ${year}</footer>
+    </div>
+</template>

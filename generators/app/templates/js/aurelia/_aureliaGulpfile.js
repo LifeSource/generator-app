@@ -102,8 +102,8 @@ gulp.task("wiredep", ["browserify"], function () {
 
     return gulp.src(config.index)
     	.pipe(wiredep(options))
-    	//.pipe($.inject(gulp.src(config.js)))
-    	.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
+    	.pipe($.inject(gulp.src(config.js)))
+    	//.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
     	.pipe(gulp.dest(config.client));
 });
 

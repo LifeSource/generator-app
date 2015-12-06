@@ -56,6 +56,7 @@ module.exports = function () {
     		root + "*.js"
     	],
     	js: [
+            jspmPackages + "system.js",
     		client + "config.js"
     	],
     	// Optimized files

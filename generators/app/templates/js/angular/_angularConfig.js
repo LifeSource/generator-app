@@ -56,7 +56,10 @@ module.exports = function () {
     		root + "*.js"
     	],
     	js: [
-    		client + "config.js"
+            clientApp + "**/*.module.js",
+            clientApp + "**/*.service.js",
+            clientApp + "**/*.js",
+            client + "**/*.js",
     	],
     	// Optimized files
     	optimized: {

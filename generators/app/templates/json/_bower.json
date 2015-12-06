@@ -12,5 +12,8 @@
         "tests"
     ],
     "devDependencies": {
-    }
+    },
+    "main": "",
+    "moduleType": [],
+    "homepage": ""
 }
