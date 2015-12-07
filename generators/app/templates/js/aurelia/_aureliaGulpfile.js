@@ -95,7 +95,7 @@ gulp.task("lint", function () {
     	.pipe($.jshint.reporter("fail"));
 });
 
-gulp.task("wiredep", ["browserify"], function () {
+gulp.task("wiredep", function () {
     log("*** Wiring up bower css, js and custom js files into the index.html file");
     var wiredep = require("wiredep").stream,
     	options = config.getWiredepDefaultOptions();
@@ -103,11 +103,10 @@ gulp.task("wiredep", ["browserify"], function () {
     return gulp.src(config.index)
     	.pipe(wiredep(options))
     	.pipe($.inject(gulp.src(config.js)))
-    	//.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
     	.pipe(gulp.dest(config.client));
 });
 
-gulp.task("inject", ["wiredep", "styles", "templatecache"], function () {
+gulp.task("inject", ["wiredep", "styles"], function () {
     log("*** Injecting custom css files.");
     return gulp.src(config.index)
     	.pipe($.inject(gulp.src(config.css + "**/*.css")))

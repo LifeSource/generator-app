@@ -57,7 +57,8 @@ module.exports = function () {
     	],
     	js: [
             jspmPackages + "system.js",
-    		client + "config.js"
+    		client + "config.js",
+    		client + "aurelia-startup.js"
     	],
     	// Optimized files
     	optimized: {

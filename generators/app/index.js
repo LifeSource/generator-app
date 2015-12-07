@@ -102,7 +102,6 @@ module.exports = generators.Base.extend({
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_db.js", path: "./src/server/models/db.js"},
             { name: "styles/_grid.styl", path: "./src/client/styles/grid.styl"},
-            { name: "styles/_layout.styl", path: "./src/client/styles/layout.styl"},
             { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
         ];
 
@@ -113,6 +112,8 @@ module.exports = generators.Base.extend({
                 { name: "js/aurelia/_aureliaStartup.js", path: "./src/client/aurelia-startup.js"},
                 { name: "js/aurelia/_main.js", path: "./src/client/main.js"},
                 { name: "js/aurelia/_index.js", path: "./src/client/app/core/index.js"},
+                { name: "js/aurelia/_dateValueConverter.js", path: "./src/client/app/core/date.js"},
+                { name: "js/aurelia/_currencyValueConverter.js", path: "./src/client/app/core/currency.js"},
                 { name: "js/aurelia/_navMenu.js", path: "./src/client/app/core/navMenu.js"},
                 { name: "html/aurelia/_navMenu.html", path: "./src/client/app/core/navMenu.html"},
                 { name: "js/aurelia/_app.js", path: "./src/client/app/app.js"},

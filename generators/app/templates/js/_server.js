@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 // static files
 switch (config.env) {
-    case: "production":
+    case "production":
         app.use(express.static(config.build));
         app.use("/*", express.static(config.buildIndex));
         break;

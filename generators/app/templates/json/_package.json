@@ -5,6 +5,7 @@
   "main": "",
   "scripts": {
     "init": "npm install",
+    "install": "jspm install",
     "start": "node src/server/server.js"
   },
   "keywords": [],
@@ -62,6 +63,13 @@
     "directories": {
         "baseURL": "src/client",
         "packages": "jspm_packages"
+    },
+    "dependencies": {
+        "aurelia-bootstrapper": "npm:aurelia-bootstrapper@^1.0.0-beta.1",
+        "aurelia-framework": "npm:aurelia-framework@^1.0.0-beta.1.0.3",
+        "aurelia-http-client": "npm:aurelia-http-client@^1.0.0-beta.1",
+        "moment": "npm:moment@^2.10.6",
+        "numeral": "npm:numeral@^1.5.3"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
