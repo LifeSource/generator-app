@@ -111,6 +111,7 @@ module.exports = generators.Base.extend({
                 { name: "js/aurelia/_aureliaConfig.js", path: "./config.js"},
                 { name: "js/aurelia/_aureliaStartup.js", path: "./src/client/aurelia-startup.js"},
                 { name: "js/aurelia/_main.js", path: "./src/client/main.js"},
+                { name: "js/aurelia/_jspmConfig.js", path: "./src/client/config.js"},
                 { name: "js/aurelia/_index.js", path: "./src/client/app/core/index.js"},
                 { name: "js/aurelia/_dateValueConverter.js", path: "./src/client/app/core/date.js"},
                 { name: "js/aurelia/_currencyValueConverter.js", path: "./src/client/app/core/currency.js"},
