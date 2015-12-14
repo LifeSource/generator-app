@@ -27,5 +27,4 @@ switch (config.env) {
         break;
 }
 
-
 app.listen(config.port);

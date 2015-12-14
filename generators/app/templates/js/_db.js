@@ -5,7 +5,7 @@ var connectionString = 'mongodb://localhost/<%= appName %>',
     db = mongoose.connect(connectionString);
 
 db.connection.on('connected', function() {
-    console.log('Mongoose connected to ' + dbURI);
+    console.log('Mongoose connected to ' + connectionString);
 });
 
 db.connection.on('error', function(err) {
@@ -15,6 +15,7 @@ db.connection.on('error', function(err) {
 db.connection.on('disconnected', function() {
     console.log('Mongoose disconnected');
 });
+
 gracefulShutdown = function(msg, callback) {
     mongoose.connection.close(function() {
         console.log('Mongoose disconnected through ' + msg);

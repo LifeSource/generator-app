@@ -101,12 +101,12 @@ module.exports = generators.Base.extend({
             { name: "settings/_README.md", path: "./README.md" },
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_db.js", path: "./src/server/models/db.js"},
-            { name: "styles/_grid.styl", path: "./src/client/styles/grid.styl"},
             { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
         ];
 
         if (gn.options.aurelia) {
             templatesToCopy.push(
+                { name: "js/aurelia/_aureliafile.js", path: "./aurelifile.js"},
                 { name: "js/aurelia/_aureliaGulpfile.js", path: "./gulpfile.js"},
                 { name: "js/aurelia/_aureliaConfig.js", path: "./config.js"},
                 { name: "js/aurelia/_aureliaStartup.js", path: "./src/client/aurelia-startup.js"},
