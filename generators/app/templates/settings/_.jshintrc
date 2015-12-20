@@ -3,6 +3,10 @@
     "indent": 4,
     "quotmark": false,
     "browser": true,
+    "browserify": true,
     "node": true,
-    "esnext": true
+    "mocha": true,
+    "jasmine": true,
+    "esnext": true,
+    "esversion": 6
 }

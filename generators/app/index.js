@@ -42,46 +42,12 @@ module.exports = generators.Base.extend({
         };
 
         this.prompt(prompts, function (answers) {
-            this.log("answers.appName: ", answers.appName);
             this.appName = answers.appName;
             this.appName = this.appName || path.basename(process.cwd());
-            this.log("this.appName: ", this.appName);
             done();
         }.bind(this));
     },
-
-    scaffordFolders: function () {
-
-        var gn = this;
-        var directoriesToMake = [
-            "./dist",
-            "./tests",
-            "./src/client",
-            "./src/client/app",
-            "./src/client/app/core",
-            "./src/client/app/home",
-            "./src/client/css",
-            "./src/client/fonts",
-            "./src/client/images",
-            "./src/client/styles",
-            "./src/client/tests",
-            "./src/server",
-            "./src/server/apis",
-            "./src/server/controllers",
-            "./src/server/models",
-            "./src/server/routes",
-            "./bower_components/"
-        ];
-
-        gn.log("Creating application folders and template files:\n");
-
-        directoriesToMake.forEach(function (element, index, array) {
-            mkdirp(element, function (err) {
-                (err) ? gn.log(err) :  gn.log("\t" + element + " folder created.");
-            });
-         });
-    },
-
+   
     packageFiles: function () {
 
         var context = {
@@ -101,13 +67,17 @@ module.exports = generators.Base.extend({
             { name: "settings/_README.md", path: "./README.md" },
             { name: "js/_server.js", path: "./src/server/server.js"},
             { name: "js/_db.js", path: "./src/server/models/db.js"},
-            { name: "styles/_site.styl", path: "./src/client/styles/site.styl"}
+            { name: "js/_seedData.js", path: "./src/server/models/seedData.js"},
+            { name: "js/_index.js", path: "./src/test/index.js"},
+            { name: "js/_index.js", path: "./src/client/app/core/index.js"},
+            { name: "js/_index.js", path: "./src/server/controllers/index.js"},
+            { name: "js/_index.js", path: "./src/server/routes/index.js"},
+            { name: "styles/_site.styl", path: "./src/styles/site.styl"}
         ];
 
         if (gn.options.aurelia) {
             templatesToCopy.push(
                 { name: "js/aurelia/_aureliafile.js", path: "./aurelifile.js"},
-                { name: "js/aurelia/_aureliaGulpfile.js", path: "./gulpfile.js"},
                 { name: "js/aurelia/_aureliaConfig.js", path: "./config.js"},
                 { name: "js/aurelia/_aureliaStartup.js", path: "./src/client/aurelia-startup.js"},
                 { name: "js/aurelia/_main.js", path: "./src/client/main.js"},
@@ -133,7 +103,6 @@ module.exports = generators.Base.extend({
         else {
             templatesToCopy.push(
                 { name: "js/_app.js", path: "./src/client/app/app.js"},
-                { name: "js/_gulpfile.js", path: "./gulpfile.js"},
                 { name: "js/_config.js", path: "./config.js"},
                 { name: "html/_index.html", path: "./src/client/index.html"}
             );
@@ -152,7 +121,6 @@ module.exports = generators.Base.extend({
 
     end: function () {
         this.log("\n----->>> Mission Accomplished! <<<-----");
-        this.log("\n\tPlease run 'gulp serve' to start the development environment or 'gulp' for gulp task listings.");
     }
 
 });
