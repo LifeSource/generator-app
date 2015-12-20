@@ -5,8 +5,17 @@
   "main": "",
   "scripts": {
     "init": "npm install",
-    "install": "jspm install",
-    "start": "node src/server/server.js"
+    "jspm": "jspm install",
+    "start": "node src/server/server.js",
+    "clean": "rimraf dist/*",
+    "lint": "jshint --reporter=node_modules/jshint-stylish ./src/**/*.js",
+    "styles": "stylus -c ./src/styles/*.styl -o ./src/client/css",
+    "prebuild": "npm-run-all clean lint styles",
+    "build": "npm run prebuild build:*",
+        "build:scripts": "babel ./src/client/ -o ./dist/app.js --minified",
+        "build:browserify": "browserify ./dist/app.js -o ./dist/app-bundle.js",
+    "serve": "npm-run-all build browser-sync",
+    "browser-sync": "browser-sync start --server dist/ --files dist/**/*.*"
   },
   "keywords": [],
   "author": "",
@@ -23,15 +32,13 @@
     "chai": "^3.4.1",
     "jade": "^1.11.0",
     "jshint-stylish": "^2.0.1",
-    "karma": "^0.13.15",1
+    "karma": "^0.13.15",
     "karma-cli": "^0.1.1",
     "lodash": "^3.10.0",
     "mocha": "^2.3.4",
     "npm-run-all": "^1.4.0",
     "sinon": "^1.17.2",
-    "stylus": "^0.53.0",
-    "wiredep": "^2.2.2",
-    "yargs": "^3.15.0"
+    "stylus": "^0.53.0"
   },
   "jspm": {
     "directories": {
