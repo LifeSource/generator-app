@@ -27,7 +27,7 @@ module.exports = generators.Base.extend({
     },
 
     initializing: function () {
-
+        this.log(yosay("Welcome to web app generator!"));
     },
 
     prompting: function () {
@@ -38,16 +38,28 @@ module.exports = generators.Base.extend({
 
         var done = this.async();
 
-        var prompts = {
-            type: "input",
-            name: "appName",
-            message: "Please enter your app name:",
-            default: this.appName || path.basename(process.cwd())
-        };
+        var prompts = [
+            { 
+                type: "input", name: "appName", 
+                message: "Please enter your app name: ", 
+                default: this.config.get("appName") || path.basename(process.cwd()) 
+            },
+            {
+                type: "list", 
+                name: "framework",
+                message: "Which client framework would you like to use?:",
+                choices: [
+                    { name: "none", value: "none" },
+                    { name: "aurelia", value: "aurelia" },
+                    { name: "angular", value: "angular" }
+                ]
+            }   
+        ];
 
         this.prompt(prompts, function (answers) {
-            this.appName = answers.appName;
-            this.appName = this.appName || path.basename(process.cwd());
+            this.config.set("appName", answers.appName);
+            this.config.save();
+            this.framework = answers.framework;
             done();
         }.bind(this));
     },
@@ -75,11 +87,12 @@ module.exports = generators.Base.extend({
         },
 
         scripts: function () {
-            if (this.options.aurelia)
-                this.directory("aurelia", "src/client");
 
-            if (this.options.angular)
-                this.directory("angular", "src/client");
+            if (this.options.aurelia || this.framework === "aurelia")
+                this.directory("frameworks/aurelia", "src/client");
+
+            if (this.options.angular || this.framework === "angular")
+                this.directory("frameworks/angular", "src/client");
         },
 
         staticAssets: function () {
@@ -98,7 +111,7 @@ module.exports = generators.Base.extend({
     },
 
     end: function () {
-        this.log("\n----->>> Mission Accomplished! <<<-----");
+        this.log(chalk.green.bold("\n----->>> Mission Accomplished! <<<-----\n"));
     }
 
 });
