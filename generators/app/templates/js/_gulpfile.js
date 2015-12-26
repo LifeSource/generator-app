@@ -102,8 +102,7 @@ gulp.task("wiredep", ["browserify"], function () {
 
     return gulp.src(config.index)
     	.pipe(wiredep(options))
-    	//.pipe($.inject(gulp.src(config.js)))
-    	.pipe($.inject(gulp.src(config.transpiledJS, { read: false })))
+    	.pipe($.inject(gulp.src(config.js)))
     	.pipe(gulp.dest(config.client));
 });
 
@@ -154,7 +153,7 @@ gulp.task('build-specs', [], function(done) {
 
 gulp.task("optimize", ["inject", "fonts", "images"], function () {
     log("*** Optimizing the javascripts, css and html");
-    var assets = $.useref.assets({ searchPath: config.root });
+    var assets = $.useref({ searchPath: config.root });
     var templateCache = config.temp + config.templateCache.file;
     var cssFilter = $.filter("**/*.css", { restore: true });
     var jsLibFilter = $.filter("**/" + config.optimized.lib, { restore: true });
@@ -174,7 +173,7 @@ gulp.task("optimize", ["inject", "fonts", "images"], function () {
         .pipe($.uglify())
         .pipe(jsAppFilter.restore)
         .pipe($.rev())
-    	.pipe(assets.restore())
+    	.pipe(assets)
     	.pipe($.useref())
     	.pipe($.revReplace())
     	.pipe(gulp.dest(config.build))
