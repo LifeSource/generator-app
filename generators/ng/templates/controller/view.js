@@ -2,7 +2,7 @@
     "use strict";
 
     angular
-        .module("<%= appName %>")
+        .module("<%= moduleName %>.module")
         .controller("<%= controllerName %>Controller", <%= controllerName  %>Controller);
 
     <%= controllerName %>Controller.$inject= [];

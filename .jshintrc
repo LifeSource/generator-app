@@ -1,4 +1,4 @@
 {
-    "esnext": true,
+    "esversion": 6,
     "expr": true
 }
