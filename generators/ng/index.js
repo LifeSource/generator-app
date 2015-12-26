@@ -10,12 +10,14 @@ module.exports = generators.NamedBase.extend({
             mod: { desc: "Generate an angular module file.", type: String }, 
             ctrl: { desc: "Generate an angular controller and view template.", type: String }, 
             serv: { desc: "Generate an angular service for XHR requests to an API.", type: String },
+            dir: { desc: "Generate an angular directive.", type: String },
             all: { desc: "Generate a service, controller, template and module file.", type: String }
         };
 
         this.option("mod", options.mod);
         this.option("ctrl", options.ctrl);
         this.option("serv", options.serv);
+        this.option("dir", options.dir);
         this.option("all", options.all);
     },
 
@@ -27,6 +29,8 @@ module.exports = generators.NamedBase.extend({
              this._generateController();
          if (this.options.serv)
              this._generateService(); 
+         if (this.options.dir)
+             this._generateDirective();
          
          if (this.options.all) {
              this._generateModule();
@@ -72,6 +76,18 @@ module.exports = generators.NamedBase.extend({
                     appName: this.config.get("appName")    
                  }
              );
+     },
+
+     _generateDirective: function() {
+         this.fs.copyTpl(
+             this.templatePath("directive/directive.js"), 
+             this.destinationPath("src/client/app/" + this.name + "/" + this.name + ".directive.js"), { 
+                    moduleName: this.name,
+                    directiveName: this.name,
+                    appName: this.config.get("appName")    
+                 }
+             );
+         
      },
 
      _capitalizeFirstLetter: function (str) {
