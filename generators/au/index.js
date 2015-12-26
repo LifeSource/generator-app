@@ -5,26 +5,41 @@ module.exports = generators.NamedBase.extend({
 
     constructor: function() {
         generators.NamedBase.apply(this, arguments);
+
+        var options = {
+            viewModel: { desc: "Generate a view + model pair.", type: String }
+        };
+
+        this.option("vm", options.viewModel);
     },
 
-     writing : {
+     writing: function() {
 
-         view: function() {
-             this.fs.copyTpl(
-             this.templatePath("view.html"),
-             this.destinationPath("src/client/app/" + this.name + "/" + this.name + ".html"), {
-                    className: this.name
-                }
-             );
-         },
+        if (this.options.vm)
+            this._generateViewModel();
+     },   
 
-         viewModel: function () {
-             this.fs.copyTpl(
-                 this.templatePath("view.js"), 
-                 this.destinationPath("src/client/app/" + this.name + "/" + this.name + ".js"), 
-                 { className: this.name }
-             );
-         }
-     }   
+     _generateViewModel: function() {
+
+         this._copyTemplates(
+             "viewModel/view.html", 
+             "src/client/app/" + this.name + "/" + this.name + ".html",
+             { className: this._capitalizeFirstLetter(this.name)  }
+         );   
+            
+         this._copyTemplates(
+             "viewModel/view.js", 
+             "src/client/app/" + this.name + "/" + this.name + ".js", 
+             { className: this._capitalizeFirstLetter(this.name)  }
+         );
+     },
+       
+    _copyTemplates: function (source, dest, options) {
+        this.fs.copyTpl( this.templatePath(source), this.destinationPath(dest), options);
+    },
+
+     _capitalizeFirstLetter: function (str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+     }
 
 });

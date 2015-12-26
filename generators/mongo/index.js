@@ -12,7 +12,8 @@ module.exports = generators.NamedBase.extend({
              this.fs.copyTpl(
                  this.templatePath("model.js"),
                  this.destinationPath("src/server/models/" + this.name + "/" + this.name + ".model.js"), {
-                     modelName: this.name
+                     modelName: this.name,
+                     modelClassName: this._capitalizeFirstLetter(this.name)
                  }
              );
          },
@@ -31,7 +32,8 @@ module.exports = generators.NamedBase.extend({
              this.fs.copyTpl(
                  this.templatePath("model.controller.js"), 
                  this.destinationPath("src/server/controllers/" + this.name + "/" + this.name + ".controller.js"), { 
-                     modelName: this.name
+                     modelName: this.name,
+                     modelClassName: this._capitalizeFirstLetter(this.name)
                  }
              );
          }

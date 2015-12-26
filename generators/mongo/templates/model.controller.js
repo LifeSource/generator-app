@@ -1,6 +1,6 @@
 module.exports = function () {
 
-    var <%= modelName %> = require("../models/<%= modelName %>/<%= modelName %>.model");
+    var <%= modelClassName %> = require("../models/<%= modelName %>/<%= modelName %>.model");
 
     var controller = {
         use: use,
@@ -14,14 +14,14 @@ module.exports = function () {
     return controller;
 
     function use(req, res, next) {
-        <%= modelName %>.find(req.params.<%= modelName %>).exec(function (err, <%= modelName %>) {
+        <%= modelClassName %>.find(req.params.<%= modelName %>).exec(function (err, <%= modelName %>) {
             if (err) {
                 req.status(500).send(err);
             } else if (<%= modelName %>) {
                 res.<%= modelName %> = <%= modelName %>;
                 next();
             } else {
-                res.status(404).send("<%= modelName %> not found!");
+                res.status(404).send("<%= modelClassName %> not found!");
             }
         });
     }
@@ -31,7 +31,7 @@ module.exports = function () {
     }
 
     function post(req, res) {
-        var <%= modelName %> = new <%= modelName %>(req.body);
+        var <%= modelName %> = new <%= modelClassName %>(req.body);
 
         <%= modelName %>.save(function (err, <%= modelName %>) {
             (err) ? res.status(500).send(err) : res.status(201).send(<%= modelName %>);
@@ -54,13 +54,13 @@ module.exports = function () {
     }
 
     function delete(req, res) {
-        <%= modelName %>.delete(function (err, <%= modelName %>) {
-            (err) ? res.status(500).send(err) : res.status(204).send("<%= modelName %> deleted successfully.");
+        req.<%= modelName %>.delete(function (err, <%= modelName %>) {
+            (err) ? res.status(500).send(err) : res.status(204).send("<%= modelClassName %> deleted successfully.");
         });
     }
 
     function query(req, res) {
-        <%= modelName %>.find().exec(function (err, <%= modelName %>s) {
+        <%= modelClassName %>.find().exec(function (err, <%= modelName %>s) {
             (err) ? res.status(500).send(err) : res.json(<%= modelName %>s);
         });
     }
