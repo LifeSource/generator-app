@@ -1,0 +1,9 @@
+<header data-ng-controller="NavController as vm">
+    <nav>
+        <ul>
+            <li data-ng-repeat="nav in vm.navs">
+                <a ui-sref="{{ nav.state }}">{{ nav.name }}</a>
+            </li>
+        </ul>
+    </nav>
+</header>

@@ -27,4 +27,6 @@ switch (config.env) {
         break;
 }
 
-app.listen(config.port);
+app.listen(config.port, function () {
+    console.log("Express server started, listening on port: ", config.port);
+});

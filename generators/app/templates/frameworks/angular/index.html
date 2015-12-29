@@ -18,6 +18,16 @@
 </head>
 <body>
 
+    <div id="container">
+        
+        <div data-ng-include="'app/layout/nav.html'"></div>
+        <section id="main">
+            <ui-view></ui-view>
+        </section>
+
+        <footer> <%= appName %> @  </footer>
+    </div>
+
     <!-- build:css js/lib.js-->
     <!-- bower:js -->
     <!-- endbower -->

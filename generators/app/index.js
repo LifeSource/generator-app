@@ -38,6 +38,7 @@ module.exports = generators.Base.extend({
 
         var done = this.async();
 
+
         var prompts = [
             { 
                 type: "input", name: "appName", 
@@ -47,7 +48,7 @@ module.exports = generators.Base.extend({
             {
                 type: "list", 
                 name: "framework",
-                message: "Which client framework would you like to use?:",
+                message: "Which client side framework would you like to use?:",
                 choices: [
                     { name: "none", value: "none" },
                     { name: "aurelia", value: "aurelia" },
@@ -62,6 +63,7 @@ module.exports = generators.Base.extend({
             this.framework = answers.framework;
             done();
         }.bind(this));
+       
     },
 
     configuring: function () {
@@ -79,7 +81,25 @@ module.exports = generators.Base.extend({
         },
 
         packageJson: function () {
-            this.directory("json", "./");
+            this.copy("json/package.json", "./package.json");
+        },
+
+        bowerJson: function() {
+            var bowerJson = {
+                name: this.appName,
+                license: "MIT",
+                dependencies: {}
+            };
+ 
+            if (this.options.angular || this.framework === "angular") {
+                bowerJson.dependencies["angular"] = "~1.4.8"; 
+                bowerJson.dependencies["angular-resource"] = "~1.4.8";
+                bowerJson.dependencies["angular-bootstrap"] = "~0.13.4";
+                bowerJson.dependencies["angular-ui-router"] = "~3.3.5";
+                this.fs.writeJSON("bower.json", bowerJson);
+                this.copy("bower/.bowerrc", ".bowerrc");
+            }
+
         },
 
         server: function () {

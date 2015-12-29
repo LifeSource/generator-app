@@ -5,4 +5,8 @@ jspm_packages/
 bower_components/
 
 # other
-.tmp
+.tmp, .zip, .gzip
+
+logs/
+tmp/
+temp/

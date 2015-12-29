@@ -7,6 +7,6 @@
     "node": true,
     "mocha": true,
     "jasmine": true,
-    "esnext": true,
+    "expr": true,
     "esversion": 6
 }
