@@ -23,53 +23,57 @@ module.exports = generators.Base.extend({
 
         this.option("aurelia", options.au);
         this.option("angular", options.ng);
-
     },
 
     initializing: function () {
         this.log(yosay("Welcome to web app generator!"));
     },
 
-    _prompting: function () {
+    _frameworkOptionIsSpecified: function() {
+        return (this.options.angular || this.options.aurelia);    
+    },
 
-        if (this.appName) {
-            return;
-        }
+    prompting: function () {
+
+        if (this.appName) { return; }
 
         var done = this.async();
-
 
         var prompts = [
             { 
                 type: "input", name: "appName", 
                 message: "Please enter your app name: ", 
                 default: this.config.get("appName") || path.basename(process.cwd()) 
-            },
-            {
-                type: "list", 
-                name: "framework",
-                message: "Which client side framework would you like to use?:",
-                choices: [
-                    { name: "none", value: "none" },
-                    { name: "aurelia", value: "aurelia" },
-                    { name: "angular", value: "angular" }
-                ]
-            }   
+            }
         ];
+
+        if (!this._frameworkOptionIsSpecified()) {
+            prompts.push(
+                {
+                    type: "list", 
+                    name: "framework",
+                    message: "Which client side framework would you like to use?:",
+                    choices: [
+                        { name: "none", value: "none" },
+                        { name: "aurelia", value: "aurelia" },
+                        { name: "angular", value: "angular" }
+                    ]
+                }   
+            );
+        }
 
         this.prompt(prompts, function (answers) {
             this.config.set("appName", answers.appName);
             this.config.save();
-            this.framework = answers.framework;
+            if (!this._frameworkOptionIsSpecified()) {
+                this.framework = answers.framework;
+            }
             done();
         }.bind(this));
-       
     },
 
     configuring: function () {
-        if (!this.options.angular && !this.options.aurelia)  {
-            this._prompting();
-        }
+
     },
 
     default: function () {
