@@ -2,40 +2,13 @@ var gulp = require("gulp"),
     del = require("del"),
     path = require("path"),
     args = require("yargs").argv,
-    babelify = require("babelify"),
-    browserify = require("browserify"),
     browserSync = require("browser-sync"),
-    source = require("vinyl-source-stream"),
     $ = require("gulp-load-plugins")({lazy: true});
 
 var config = require("./config")();
 
 gulp.task("default", ["help"]);
 gulp.task("help", $.taskListing);
-
-gulp.task("concat", ["clean-babel"], function () {
-    log("Concatenating JS files for transpilation.");
-    return gulp.src(config.js)
-        .pipe($.concat("all.js"))
-        .pipe(gulp.dest(config.temp));
-});
-
-gulp.task("browserify", ["concat"], function () {
-    log("Transpiling ES6 ----> ES5");
-    return browserify(config.temp + "all.js", { read: false })
-        .transform(babelify)
-        .bundle()
-        .pipe(source("all.js"))
-        .pipe(gulp.dest(config.transpiled));
-});
-
-gulp.task("clean-babel", function (done) {
-    var paths = [].concat(
-        config.transpiled + "all.js",
-        config.temp + "all.js"
-    );
-    clean(paths, done);
-});
 
 gulp.task("clean", function (done) {
     var path = [].concat(config.build, config.css);
@@ -95,7 +68,7 @@ gulp.task("lint", function () {
     	.pipe($.jshint.reporter("fail"));
 });
 
-gulp.task("wiredep", ["browserify"], function () {
+gulp.task("wiredep", ["lint", "styles"], function () {
     log("*** Wiring up bower css, js and custom js files into the index.html file");
     var wiredep = require("wiredep").stream,
     	options = config.getWiredepDefaultOptions();
@@ -106,7 +79,20 @@ gulp.task("wiredep", ["browserify"], function () {
     	.pipe(gulp.dest(config.client));
 });
 
-gulp.task("inject", ["wiredep", "styles", "templatecache"], function () {
+gulp.task("templatecache", function () {
+    
+    log("Creating Angular template cache.");
+    return gulp.src(config.htmlTemplates)
+        .pipe($.htmlmin({ collapseWhitespace: true }))
+        .pipe($.angularTemplatecache(
+            config.templateCache.file,
+            config.templateCache.options
+        ))
+        .pipe(gulp.dest(config.temp));
+});
+
+
+gulp.task("inject", ["wiredep", "templatecache"], function () {
     log("*** Injecting custom css files.");
     return gulp.src(config.index)
     	.pipe($.inject(gulp.src(config.css + "**/*.css")))
@@ -161,6 +147,9 @@ gulp.task("optimize", ["inject", "fonts", "images"], function () {
 
     return gulp.src(config.index)
     	.pipe($.plumber())
+    	.pipe($.inject(templateCache, { read: false }, {
+            starttag: "<!-- inject:templates.js -->"
+        }))
     	.pipe(assets)
         .pipe(cssFilter)
         .pipe($.csso())

@@ -30,7 +30,7 @@ module.exports = generators.Base.extend({
         this.log(yosay("Welcome to web app generator!"));
     },
 
-    prompting: function () {
+    _prompting: function () {
 
         if (this.appName) {
             return;
@@ -67,7 +67,9 @@ module.exports = generators.Base.extend({
     },
 
     configuring: function () {
-
+        if (!this.options.angular && !this.options.aurelia)  {
+            this._prompting();
+        }
     },
 
     default: function () {
@@ -86,7 +88,7 @@ module.exports = generators.Base.extend({
 
         bowerJson: function() {
             var bowerJson = {
-                name: this.appName,
+                name: this.config.get("appName"),
                 license: "MIT",
                 dependencies: {}
             };
@@ -95,7 +97,7 @@ module.exports = generators.Base.extend({
                 bowerJson.dependencies["angular"] = "~1.4.8"; 
                 bowerJson.dependencies["angular-resource"] = "~1.4.8";
                 bowerJson.dependencies["angular-bootstrap"] = "~0.13.4";
-                bowerJson.dependencies["angular-ui-router"] = "~3.3.5";
+                bowerJson.dependencies["angular-ui-router"] = "~0.2.15";
                 this.fs.writeJSON("bower.json", bowerJson);
                 this.copy("bower/.bowerrc", ".bowerrc");
             }
@@ -108,11 +110,15 @@ module.exports = generators.Base.extend({
 
         scripts: function () {
 
-            if (this.options.aurelia || this.framework === "aurelia")
+            if (this.options.aurelia || this.framework === "aurelia") {
                 this.directory("frameworks/aurelia", "src/client");
+            }
 
-            if (this.options.angular || this.framework === "angular")
+            if (this.options.angular || this.framework === "angular") {
                 this.directory("frameworks/angular", "src/client");
+            }
+            this.copy("js/_config.js", "./config.js");
+            this.copy("js/_gulpfile.js", "./gulpfile.js");
         },
 
         staticAssets: function () {

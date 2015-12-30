@@ -13,7 +13,7 @@ module.exports = function () {
         transpiled = client + "transpiled/",
     	server = src + "server/",
     	build = root + "dist/",
-    	temp = client + "temp/",
+    	temp = root+ "tmp/",
         report = root + "report/",
         specRunnerFile = "specs.html",
         wiredep = require('wiredep'),
@@ -56,7 +56,9 @@ module.exports = function () {
     		root + "*.js"
     	],
     	js: [
-    		client + "config.js"
+    		clientApp + "**/*.module.js",
+    		clientApp + "**/*.service.js",
+    		client + "**/*.js"
     	],
     	// Optimized files
     	optimized: {
