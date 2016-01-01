@@ -1,24 +1,24 @@
 module.exports = function () {
 
-    var <%= modelClassName %> = require("../models/<%= modelName %>/<%= modelName %>.model");
+    var <%= modelClassName %> = require("../../models/<%= modelName %>/<%= modelName %>.model");
 
     var controller = {
         use: use,
         get: get,
         post: post,
-        update: update,
-        delete: "delete",
+        patch: patch,
+        delete: remove,
         query: query
     };
 
     return controller;
 
     function use(req, res, next) {
-        <%= modelClassName %>.find(req.params.<%= modelName %>).exec(function (err, <%= modelName %>) {
+        <%= modelClassName %>.find(req.params.id, function (err, <%= modelName %>) {
             if (err) {
                 req.status(500).send(err);
             } else if (<%= modelName %>) {
-                res.<%= modelName %> = <%= modelName %>;
+                req.<%= modelName %> = <%= modelName %>;
                 next();
             } else {
                 res.status(404).send("<%= modelClassName %> not found!");
@@ -38,7 +38,7 @@ module.exports = function () {
         });
     }
 
-    function update(req, res) {
+    function patch(req, res) {
 
         if (req.params.id) {
             delete req.params.id;
@@ -53,7 +53,7 @@ module.exports = function () {
         });
     }
 
-    function delete(req, res) {
+    function remove(req, res) {
         req.<%= modelName %>.delete(function (err, <%= modelName %>) {
             (err) ? res.status(500).send(err) : res.status(204).send("<%= modelClassName %> deleted successfully.");
         });

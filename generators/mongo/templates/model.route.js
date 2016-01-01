@@ -4,7 +4,7 @@ module.exports = function () {
     
     var <%= modelName%>Router = express.Router();
 
-    var <%= modelName %>Controller = require("../controllers/<%= modelName %>/<%= modelName %>.controller")();
+    var <%= modelName %>Controller = require("../../controllers/<%= modelName %>/<%= modelName %>.controller")();
 
 
     <%= modelName %>Router.route("/")

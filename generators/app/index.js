@@ -87,7 +87,11 @@ module.exports = generators.Base.extend({
         },
 
         packageJson: function () {
-            this.copy("json/package.json", "./package.json");
+            this.fs.copyTpl(
+                this.templatePath("json/_package.json"),
+                this.destinationPath("./package.json"), 
+                { appName: this.config.get("appName") }
+            );
         },
 
         bowerJson: function() {
@@ -121,6 +125,7 @@ module.exports = generators.Base.extend({
             if (this.options.angular || this.framework === "angular") {
                 this.directory("frameworks/angular", "src/client");
             }
+
             this.copy("js/_config.js", "./config.js");
             this.copy("js/_gulpfile.js", "./gulpfile.js");
         },
@@ -142,6 +147,7 @@ module.exports = generators.Base.extend({
 
     end: function () {
         this.log(chalk.green.bold("\n----->>> Mission Accomplished! <<<-----\n"));
+        this.log(chalk.yellow("\nYou may need to run 'npm install' if this was not done as and 'gulp wiredep' before you can serve the application."));
     }
 
 });
