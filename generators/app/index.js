@@ -30,7 +30,7 @@ module.exports = generators.Base.extend({
     },
 
     _frameworkOptionIsSpecified: function() {
-        return (this.options.angular || this.options.aurelia);    
+        return (this.options.angular || this.options.aurelia || this.framework === "angular" || this.framework === "aurelia");
     },
 
     prompting: function () {
@@ -40,17 +40,17 @@ module.exports = generators.Base.extend({
         var done = this.async();
 
         var prompts = [
-            { 
-                type: "input", name: "appName", 
-                message: "Please enter your app name: ", 
-                default: this.config.get("appName") || path.basename(process.cwd()) 
+            {
+                type: "input", name: "appName",
+                message: "Please enter your app name: ",
+                default: this.config.get("appName") || path.basename(process.cwd())
             }
         ];
 
         if (!this._frameworkOptionIsSpecified()) {
             prompts.push(
                 {
-                    type: "list", 
+                    type: "list",
                     name: "framework",
                     message: "Which client side framework would you like to use?:",
                     choices: [
@@ -58,7 +58,7 @@ module.exports = generators.Base.extend({
                         { name: "aurelia", value: "aurelia" },
                         { name: "angular", value: "angular" }
                     ]
-                }   
+                }
             );
         }
 
@@ -89,7 +89,7 @@ module.exports = generators.Base.extend({
         packageJson: function () {
             this.fs.copyTpl(
                 this.templatePath("json/_package.json"),
-                this.destinationPath("./package.json"), 
+                this.destinationPath("./package.json"),
                 { appName: this.config.get("appName") }
             );
         },
@@ -100,9 +100,9 @@ module.exports = generators.Base.extend({
                 license: "MIT",
                 dependencies: {}
             };
- 
+
             if (this.options.angular || this.framework === "angular") {
-                bowerJson.dependencies["angular"] = "~1.4.8"; 
+                bowerJson.dependencies["angular"] = "~1.4.8";
                 bowerJson.dependencies["angular-resource"] = "~1.4.8";
                 bowerJson.dependencies["angular-bootstrap"] = "~0.13.4";
                 bowerJson.dependencies["angular-ui-router"] = "~0.2.15";
@@ -140,7 +140,7 @@ module.exports = generators.Base.extend({
 
 
     install: function () {
-        if (this.options.aurelia || this.options.angular) {
+        if (this._frameworkOptionIsSpecified()) {
             this.installDependencies();
         }
     },

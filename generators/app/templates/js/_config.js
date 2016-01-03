@@ -34,7 +34,10 @@ module.exports = function () {
     	build: build,
         report: report,
     	css: css,
-    	fonts: bowerComponents + "font-awesome/fonts/**/*.*",
+    	fonts:[
+             bowerComponents + "font-awesome/fonts/**/*.*",
+             bowerComponents + "bootstrap/fonts/**/*.*",
+        ],
     	html: clientApp + "**/*.html",
     	htmlTemplates: clientApp + "**/*.html",
     	images: images + "**/*.*",
@@ -58,6 +61,7 @@ module.exports = function () {
     	js: [
     		clientApp + "**/*.module.js",
     		clientApp + "**/*.service.js",
+            "!" + clientApp + "**/*.spec.js",
     		client + "**/*.js"
     	],
     	// Optimized files

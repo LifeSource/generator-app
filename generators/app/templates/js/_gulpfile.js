@@ -80,7 +80,7 @@ gulp.task("wiredep", ["lint", "styles"], function () {
 });
 
 gulp.task("templatecache", function () {
-    
+
     log("Creating Angular template cache.");
     return gulp.src(config.htmlTemplates)
         .pipe($.htmlmin({ collapseWhitespace: true }))
@@ -99,43 +99,6 @@ gulp.task("inject", ["wiredep", "templatecache"], function () {
     	.pipe(gulp.dest(config.client));
 });
 
-/**
- * Run the spec runner
- * @return {Stream}
- */
-gulp.task('serve-specs', ['build-specs'], function(done) {
-    log('run the spec runner');
-    serve(true /* isDev */, true /* specRunner */);
-    done();
-});
-
-/**
- * Inject all the spec files into the specs.html
- * @return {Stream}
- */
-gulp.task('build-specs', [], function(done) {
-    log('building the spec runner');
-
-    var wiredep = require('wiredep').stream;
-    var templateCache = config.temp + config.templateCache.file;
-    var options = config.getWiredepDefaultOptions();
-    var specs = config.specs;
-
-    if (args.startServers) {
-        specs = [].concat(specs, config.serverIntegrationSpecs);
-    }
-    options.devDependencies = true;
-
-    return gulp
-        .src(config.specRunner)
-        .pipe(wiredep(options))
-        .pipe(inject(config.js, '', config.jsOrder))
-        .pipe(inject(config.testlibraries, 'testlibraries'))
-        .pipe(inject(config.specHelpers, 'spechelpers'))
-        .pipe(inject(specs, 'specs', ['**/*']))
-        .pipe(inject(templateCache, 'templates'))
-        .pipe(gulp.dest(config.client));
-});
 
 gulp.task("optimize", ["inject", "fonts", "images"], function () {
     log("*** Optimizing the javascripts, css and html");
@@ -168,6 +131,12 @@ gulp.task("optimize", ["inject", "fonts", "images"], function () {
     	.pipe(gulp.dest(config.build))
     	.pipe($.rev.manifest())
     	.pipe(gulp.dest(config.build));
+});
+
+gulp.task("build", ["optimize", "images", "fonts"], function (done) {
+    log("Building all assets and compiling all scripts");
+    dele(config.temp);
+    done();
 });
 
 gulp.task("bump", function () {
@@ -206,23 +175,52 @@ gulp.task('test', ['lint', 'templatecache'], function(done) {
  * To start servers and run midway specs as well:
  *    gulp autotest --startServers
  */
-gulp.task('autotest', function(done) {
-    startTests(false /*singleRun*/ , done);
+gulp.task('autotest', function(done) { startTests(false /*singleRun*/ , done); });
+
+/**
+ * Run the spec runner
+ * @return {Stream}
+ */
+gulp.task('serve-specs', ['build-specs'], function(done) {
+    log('run the spec runner');
+    serve(true /* isDev */, true /* specRunner */);
+    done();
 });
+
+/**
+ * Inject all the spec files into the specs.html
+ * @return {Stream}
+ */
+gulp.task('build-specs', ["templatecache"], function(done) {
+    log('building the spec runner');
+
+    var wiredep = require('wiredep').stream;
+    var templateCache = config.temp + config.templateCache.file;
+    var options = config.getWiredepDefaultOptions();
+    var specs = config.specs;
+
+    if (args.startServers) {
+        specs = [].concat(specs, config.serverIntegrationSpecs);
+    }
+    options.devDependencies = true;
+
+    return gulp
+        .src(config.specRunner)
+        .pipe(wiredep(options))
+        .pipe($.inject(gulp.src(config.testlibraries),
+            {name: "inject:testlibraries", read: false}))
+        .pipe($.inject(gulp.src(config.js)))
+        .pipe($.inject(gulp.src(config.temp + config.templateCache.file),
+            {name: "inject:templates", read: false}))
+        .pipe(gulp.dest(config.client));
+});
+
 
 gulp.task("serve", ["serve-dev"]);
+gulp.task("serve-build", ["build"], function (isDev) { serve(false /* isDev */); });
+gulp.task("serve-dev", ["inject"], function () { serve(true /* isDev */); });
 
-gulp.task("serve-build", ["optimize"], function (isDev) {
-    serve(false /* isDev */);
-});
-
-//gulp.task("serve-dev", ["lint", "inject"], function () {
-gulp.task("serve-dev", ["inject"], function () {
-    log("*** Serving up development environment");
-    serve(true /* isDev */);
-});
-
-function serve(isDev) {
+function serve(isDev, specRunner) {
     var options = {
     	script: config.nodeServer,
     	delayTime: 1,
@@ -245,7 +243,7 @@ function serve(isDev) {
     	})
     	.on("start", function () {
     		log("*** nodemon started.");
-    		startBrowserSync(isDev);
+    		startBrowserSync(isDev, specRunner);
     	})
     	.on("crash", function () {
     		log("*** nodemon crashed due to unexpected reason(s).");
@@ -262,7 +260,7 @@ function changeEvent(event) {
     log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
 }
 
-function startBrowserSync(isDev) {
+function startBrowserSync(isDev, specRunner) {
     log("*** Starting browser sync");
     if (browserSync.active || args.nosync) {
     	return;
@@ -300,6 +298,9 @@ function startBrowserSync(isDev) {
     	reloadDelay: 1,
     };
 
+    if (specRunner) {
+        options.startPath = config.specRunner;
+    }
     browserSync(options);
 }
 
