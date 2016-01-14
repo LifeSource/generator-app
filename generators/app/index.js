@@ -13,59 +13,38 @@ module.exports = generators.Base.extend({
 
         generators.Base.apply(this, arguments);
 
-        var options = {
-            au: { desc: "Uses the Aurelia development setup.", type: String},
-            ng: { desc: "Uses the Angular development setup.", type: String}
-        };
-
         this.argument('appName', { type: String, required: false });
         this.appName = _.camelCase(this.appName);
 
-        this.option("aurelia", options.au);
-        this.option("angular", options.ng);
+        var options = config.getAureliaOptions();
+        options.forEach(function (option) {
+            this.option(option.name, option.setup);
+        }.bind(this));
     },
 
     initializing: function () {
         this.log(yosay("Welcome to web app generator!"));
     },
 
-    _frameworkOptionIsSpecified: function() {
-        return (this.options.angular || this.options.aurelia || this.framework === "angular" || this.framework === "aurelia");
+    _frameworkOptionSpecified: function() {
+        return (this.options.angular || this.options.aurelia || this.options.react);
     },
 
     prompting: function () {
 
+        var done = this.async();
         if (this.appName) { return; }
 
-        var done = this.async();
+        var prompts = [config.appNamePrompt];
 
-        var prompts = [
-            {
-                type: "input", name: "appName",
-                message: "Please enter your app name: ",
-                default: this.config.get("appName") || path.basename(process.cwd())
-            }
-        ];
-
-        if (!this._frameworkOptionIsSpecified()) {
-            prompts.push(
-                {
-                    type: "list",
-                    name: "framework",
-                    message: "Which client side framework would you like to use?:",
-                    choices: [
-                        { name: "none", value: "none" },
-                        { name: "aurelia", value: "aurelia" },
-                        { name: "angular", value: "angular" }
-                    ]
-                }
-            );
+        if (!this._frameworkOptionSpecified()) {
+            prompts.push(config.frameworkPrompt);
         }
 
         this.prompt(prompts, function (answers) {
             this.config.set("appName", answers.appName);
             this.config.save();
-            if (!this._frameworkOptionIsSpecified()) {
+            if (!this._frameworkOptionSpecified()) {
                 this.framework = answers.framework;
             }
             done();
@@ -109,7 +88,6 @@ module.exports = generators.Base.extend({
                 this.fs.writeJSON("bower.json", bowerJson);
                 this.copy("bower/.bowerrc", ".bowerrc");
             }
-
         },
 
         server: function () {
@@ -126,6 +104,10 @@ module.exports = generators.Base.extend({
                 this.directory("frameworks/angular", "src/client");
             }
 
+            if (this.options.react || this.framework === "react") {
+                this.directory("frameworks/react", "src/client");
+            }
+
             this.copy("js/_config.js", "./config.js");
             this.copy("js/_gulpfile.js", "./gulpfile.js");
         },
@@ -138,16 +120,14 @@ module.exports = generators.Base.extend({
         }
     },
 
-
     install: function () {
-        if (this._frameworkOptionIsSpecified()) {
+        if (this._frameworkOptionSpecified()) {
             this.installDependencies();
         }
     },
 
     end: function () {
         this.log(chalk.green.bold("\n----->>> Mission Accomplished! <<<-----\n"));
-        this.log(chalk.yellow("\nYou may need to run 'npm install' if this was not done as and 'gulp wiredep' before you can serve the application."));
     }
 
 });

@@ -1,95 +1,50 @@
+var path = require("path");
+
 module.exports = function () {
 
     var port = process.env.PORT || 3000,
     	env = process.env.NODE_ENV || "dev";
 
-    var root = "./",
-    	src = root + "src/",
-    	client = src + "client/",
-    	clientApp = client + "app/",
-    	css = client + "css/",
-    	styles = client + "styles/",
-    	images = client + "images/",
-    	server = src + "server/",
-    	build = root + "build/",
-    	temp = root + "temp/",
-    	nodeModules = root + "node_modules/",
-    	bowerComponents = root + "bower_components/",
-    	ignore = [nodeModules, bowerComponents];
-
+    var root = "./";
+    
     var config = {
-    	// Environment
-    	env: env,
-    	port: port,
-    	// Paths
-    	root: root,
-    	src: src,
-    	temp: temp,
-    	build: build,
-    	css: css,
-    	fonts: bowerComponents + "font-awesome/fonts/**/*.*",
-    	html: clientApp + "**/*.html",
-    	htmlTemplates: clientApp + "**/*.html",
-    	images: images + "**/*.*",
-    	client: client,
-    	clientApp: clientApp,
-    	styles: styles + "**/*.styl",
-    	server: server,
-    	// Files
-    	nodeServer: server + "server.js",
-    	index: client + "index.html",
-    	siteCss: css + "site.css",
-    	// JavaScripts
-    	allJs: [
-    		clientApp + "**/*.js",
-    		client + "**/*.js",
-    		root + "*.js"
-    	],
-    	js: [
-    		clientApp + "**/*.module.js",
-    		clientApp + "**/*.service.js",
-    		clientApp + "**/*.js",
-    		client + "**/*.js",
-    	],
-    	// Optimized files
-    	optimized: {
-    		app: "app.js",
-    		lib: "lib.js"
-    	},
-    	// Template Cache
-    	templateCache: {
-    		file: "templates.js",
-    		options: {
-    			module: "app.core",
-    			standAlone: false,
-    			root: "app/"
-    		}
-    	},
-    	// Bower and NPM
-    	nodeModules: nodeModules,
-    	bowerComponents: bowerComponents,
-    	bower: {
-    		json: root + "bower.json",
-    		directory: bowerComponents,
-    		ignorePath: "../.."
-    	},
-    	packages: [
-    		"./package.json",
-    		"./bower.json"
-    	],
-    	// Browser Sync
-    	browserReloadDelay: 1000
+
+        root: root,
+        appNamePrompt: {
+            type: "input",
+            name: "appName",
+            message: "Please enter your app name: ",
+            default: path.basename(process.cwd())
+        },
+        frameworkPrompt: {
+            type: "list",
+            name: "framework",
+            message: "Which client side framework would you like to use?:",
+            choices: [
+                { name: "none", value: "none" },
+                { name: "aurelia", value: "aurelia" },
+                { name: "angular", value: "angular" }
+            ]
+        }
+
     };
 
-    config.getWiredepDefaultOptions = function () {
-    	var options = {
-    		json: config.bower.json,
-    		directory: config.bower.directory,
-    		ignorePath: config.bower.ignorePath
-    	};
+    config.getAureliaOptions = function() {
+    
+        var options =[
+            { 
+                name: "aurelia",
+                setup: { desc: "Uses the Aurelia development setup.", type: String}
+            },
+            {
+                name: "angular",
+                setup: { desc: "Uses the Angular development setup.", type: String}
+            }
+        ];
 
-    	return options;
+        return options;
     };
 
     return config;
+
 };
