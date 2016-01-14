@@ -7,7 +7,7 @@
 
     <%= serviceName %>Service.inject = ["$http"];
 
-    function <%= serviceName %>($http) {
+    function <%= serviceName %>Service($http) {
 
         var apiUrl = "/api/<%= serviceName %>s/";
 
@@ -15,7 +15,7 @@
             get: get,
             post: post,
             update: update,
-            "delete": "delete",
+            remove: remove,
             query: query
         };
 
@@ -42,7 +42,7 @@
                 .catch(fail);
         }
 
-        function post(data) 
+        function post(data) {
            return $http.post(apiUrl, data)
                 .then(success)
                 .catch(fail);
@@ -54,7 +54,7 @@
                 .catch(fail);
         }
 
-        function delete(id) {
+        function remove(id) {
            return $http.delete(apiUrl + id) 
                 .then(success)
                 .catch(fail);

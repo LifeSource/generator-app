@@ -16,8 +16,8 @@ module.exports = function () {
     	temp = root+ "tmp/",
         report = root + "report/",
         specRunnerFile = "specs.html",
-        wiredep = require('wiredep'),
-        bowerFiles = wiredep({devDependencies: true})['js'], // jshint ignore:line
+        wiredep = require("wiredep"),
+        bowerFiles = wiredep({devDependencies: true})["js"], // jshint ignore:line
     	nodeModules = root + "node_modules/",
         jspmPackages = root + "jspm_packages/",
     	bowerComponents = root + "bower_components/",
@@ -109,13 +109,13 @@ module.exports = function () {
          *  6 templates
          */
         testlibraries: [
-            nodeModules + '/mocha/mocha.js',
-            nodeModules + '/chai/chai.js',
-            nodeModules + '/sinon-chai/lib/sinon-chai.js'
+            nodeModules + "/mocha/mocha.js",
+            nodeModules + "/chai/chai.js",
+            nodeModules + "/sinon-chai/lib/sinon-chai.js"
         ],
-        specHelpers: [client + 'test-helpers/*.js'],
-        specs: [clientApp + '**/*.spec.js'],
-        serverIntegrationSpecs: [client + '/tests/server-integration/**/*.spec.js']
+        specHelpers: [client + "test-helpers/*.js"],
+        specs: [clientApp + "**/*.spec.js"],
+        serverIntegrationSpecs: [client + "/tests/server-integration/**/*.spec.js"]
     };
 
     config.getWiredepDefaultOptions = function () {
@@ -142,24 +142,24 @@ module.exports = function () {
             files: [].concat(
                 bowerFiles,
                 config.specHelpers,
-                clientApp + '**/*.module.js',
-                clientApp + '**/*.js',
+                clientApp + "**/*.module.js",
+                clientApp + "**/*.js",
                 temp + config.templateCache.file,
                 config.serverIntegrationSpecs
             ),
             exclude: [],
             coverage: {
-                dir: report + 'coverage',
+                dir: report + "coverage",
                 reporters: [
                     // reporters not supporting the `file` property
-                    {type: 'html', subdir: 'report-html'},
-                    {type: 'lcov', subdir: 'report-lcov'},
-                    {type: 'text-summary'} //, subdir: '.', file: 'text-summary.txt'}
+                    {type: "html", subdir: "report-html"},
+                    {type: "lcov", subdir: "report-lcov"},
+                    {type: "text-summary"} //, subdir: ".", file: "text-summary.txt"}
                 ]
             },
             preprocessors: {}
         };
-        options.preprocessors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
+        options.preprocessors[clientApp + "**/!(*.spec)+(.js)"] = ["coverage"];
         return options;
     }
 };

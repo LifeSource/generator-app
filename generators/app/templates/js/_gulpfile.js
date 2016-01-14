@@ -165,7 +165,7 @@ gulp.task("bump", function () {
  *    gulp test --startServers
  * @return {Stream}
  */
-gulp.task('test', ['lint', 'templatecache'], function(done) {
+gulp.task("test", ["lint", "templatecache"], function(done) {
     startTests(true /*singleRun*/ , done);
 });
 
@@ -175,14 +175,14 @@ gulp.task('test', ['lint', 'templatecache'], function(done) {
  * To start servers and run midway specs as well:
  *    gulp autotest --startServers
  */
-gulp.task('autotest', function(done) { startTests(false /*singleRun*/ , done); });
+gulp.task("autotest", function(done) { startTests(false /*singleRun*/ , done); });
 
 /**
  * Run the spec runner
  * @return {Stream}
  */
-gulp.task('serve-specs', ['build-specs'], function(done) {
-    log('run the spec runner');
+gulp.task("serve-specs", ["build-specs"], function(done) {
+    log("run the spec runner");
     serve(true /* isDev */, true /* specRunner */);
     done();
 });
@@ -191,18 +191,19 @@ gulp.task('serve-specs', ['build-specs'], function(done) {
  * Inject all the spec files into the specs.html
  * @return {Stream}
  */
-gulp.task('build-specs', ["templatecache"], function(done) {
-    log('building the spec runner');
+gulp.task("build-specs", ["templatecache"], function(done) {
+    log("building the spec runner");
 
-    var wiredep = require('wiredep').stream;
+    var wiredep = require("wiredep").stream;
     var templateCache = config.temp + config.templateCache.file;
     var options = config.getWiredepDefaultOptions();
     var specs = config.specs;
 
+    options.devDependencies = true;
+
     if (args.startServers) {
         specs = [].concat(specs, config.serverIntegrationSpecs);
     }
-    options.devDependencies = true;
 
     return gulp
         .src(config.specRunner)
@@ -210,6 +211,8 @@ gulp.task('build-specs', ["templatecache"], function(done) {
         .pipe($.inject(gulp.src(config.testlibraries),
             {name: "inject:testlibraries", read: false}))
         .pipe($.inject(gulp.src(config.js)))
+        .pipe($.inject(gulp.src(specs),
+            {name: "inject:specs", read: false}))
         .pipe($.inject(gulp.src(config.temp + config.templateCache.file),
             {name: "inject:templates", read: false}))
         .pipe(gulp.dest(config.client));
@@ -256,8 +259,8 @@ function serve(isDev, specRunner) {
 // Utilities Functions
 
 function changeEvent(event) {
-    var srcPattern = new RegExp('/.*(?=/' + config.source + ')/');
-    log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
+    var srcPattern = new RegExp("/.*(?=/" + config.source + ")/");
+    log("File " + event.path.replace(srcPattern, "") + " " + event.type);
 }
 
 function startBrowserSync(isDev, specRunner) {
@@ -268,8 +271,6 @@ function startBrowserSync(isDev, specRunner) {
 
     if (isDev) {
     	gulp.watch([config.styles], ["styles"])
-    		.on("change", function (event) { changeEvent(event); });
-    	gulp.watch([config.js], ["wiredep"])
     		.on("change", function (event) { changeEvent(event); });
     } else {
     	gulp.watch([config.styles, config.js, config.html], ["optimize", browserSync.reload])
@@ -307,14 +308,14 @@ function startBrowserSync(isDev, specRunner) {
 function startTests(singleRun, done) {
     var child;
     var excludeFiles = [];
-    var fork = require('child_process').fork;
-    var karma = require('karma').server;
+    var fork = require("child_process").fork;
+    var karma = require("karma").server;
     var serverSpecs = config.serverIntegrationSpecs;
 
     if (args.startServers) {
-        log('Starting servers');
+        log("Starting servers");
         var savedEnv = process.env;
-        savedEnv.NODE_ENV = 'dev';
+        savedEnv.NODE_ENV = "dev";
         savedEnv.PORT = 8888;
         child = fork(config.nodeServer);
     } else {
@@ -324,7 +325,7 @@ function startTests(singleRun, done) {
     }
 
     karma.start({
-        configFile: __dirname + '/karma.conf.js',
+        configFile: __dirname + "/karma.conf.js",
         exclude: excludeFiles,
         singleRun: !!singleRun
     }, karmaCompleted);
@@ -332,13 +333,13 @@ function startTests(singleRun, done) {
     ////////////////
 
     function karmaCompleted(karmaResult) {
-        log('Karma completed');
+        log("Karma completed");
         if (child) {
-            log('shutting down the child process');
+            log("shutting down the child process");
             child.kill();
         }
         if (karmaResult === 1) {
-            done('karma: tests failed with code ' + karmaResult);
+            done("karma: tests failed with code " + karmaResult);
         } else {
             done();
         }

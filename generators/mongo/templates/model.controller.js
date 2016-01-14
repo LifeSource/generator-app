@@ -7,7 +7,7 @@ module.exports = function () {
         get: get,
         post: post,
         patch: patch,
-        delete: remove,
+        remove: remove,
         query: query
     };
 

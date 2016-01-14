@@ -16,7 +16,7 @@ module.exports = function () {
     <%= modelName %>Router.route("/:id")
         .get(<%= modelName %>Controller.get)
         .patch(<%= modelName %>Controller.patch)
-        .delete(<%= modelName %>Controller.delete);
+        .delete(<%= modelName %>Controller.remove);
     
     return <%= modelName %>Router;
 };
