@@ -36,6 +36,7 @@ module.exports = generators.NamedBase.extend({
              this._generateModule();
              this._generateService(); 
              this._generateController();
+             this._generateSpec();
          }
      },   
 
@@ -88,6 +89,15 @@ module.exports = generators.NamedBase.extend({
                  }
              );
          
+     },
+
+     _generateSpec: function () {
+        this.fs.copyTpl(
+            this.templatePath("spec/spec.js"),
+            this.destinationPath("src/client/app/" + this.name + "/" +  this.name + ".spec.js"), {
+                moduleName: this._capitalizeFirstLetter(this.name)
+            }
+        );
      },
 
      _capitalizeFirstLetter: function (str) {
