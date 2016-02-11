@@ -61,7 +61,7 @@ module.exports = function () {
     	js: [
     		clientApp + "**/*.module.js",
     		clientApp + "**/*.service.js",
-            "!" + clientApp + "**/*.spec.js",
+            "!" + client + "**/*.spec.js",
     		client + "**/*.js"
     	],
     	// Optimized files
