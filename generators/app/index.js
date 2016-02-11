@@ -82,13 +82,13 @@ module.exports = generators.Base.extend({
             };
 
             if (this.options.angular || this.framework === "angular") {
-                bowerJson.dependencies["angular"] = "~1.4.8";
-                bowerJson.dependencies["angular-resource"] = "~1.4.8";
-                bowerJson.dependencies["angular-bootstrap"] = "~0.13.4";
-                bowerJson.dependencies["angular-ui-router"] = "~0.2.15";
-                bowerJson.devDependencies["angular-mocks"] = "~1.4.8";
-                bowerJson.devDependencies["sinon"] = "~1.12.1";
-                bowerJson.devDependencies["bardjs"] = "~0.1.8";
+                bowerJson.dependencies["angular"] = "^1.4.8";
+                bowerJson.dependencies["angular-resource"] = "^1.4.8";
+                bowerJson.dependencies["angular-bootstrap"] = "^0.13.4";
+                bowerJson.dependencies["angular-ui-router"] = "^0.2.15";
+                bowerJson.devDependencies["angular-mocks"] = "^1.4.8";
+                bowerJson.devDependencies["sinon"] = "^1.12.1";
+                bowerJson.devDependencies["bardjs"] = "^0.1.8";
                 this.fs.writeJSON("bower.json", bowerJson);
                 this.copy("bower/.bowerrc", ".bowerrc");
             }
