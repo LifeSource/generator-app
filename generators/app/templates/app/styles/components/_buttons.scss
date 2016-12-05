@@ -1,0 +1,9 @@
+%button {
+  text-align: center;
+  text-transform: uppercase;
+  @content;
+}
+
+.button {
+  @extend %button;
+}
