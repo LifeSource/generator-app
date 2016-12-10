@@ -22,7 +22,7 @@ module.exports = {
   devServer: {
     contentBase: "dist"
   },
-  devtool: "source-map",
+  devtool: "inline-source-map",
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', 'tsx', '.js', 'jsx']
   },
