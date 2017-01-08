@@ -13,10 +13,12 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin("styles/styles.css"),
     new BrowserSync({
-      host: 'localhost',
+      host: "localhost",
       port: 3000,
       files: "**/*.*",
-      server: { baseDir: ['dist'] }
+      server: {
+        baseDir: ["dist"]
+      }
     })
   ],
   devServer: {
@@ -24,11 +26,10 @@ module.exports = {
   },
   devtool: "inline-source-map",
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.ts', 'tsx', '.js', 'jsx']
+    extensions: ["", ".webpack.js", ".web.js", ".ts", "tsx", ".js", "jsx"]
   },
   module: {
-    loaders: [
-      {
+    loaders: [{
         test: /\.css$/,
         exclude: /node_modules/,
         loader: ExtractTextPlugin.extract("style", "css!autoprefixer")
@@ -41,7 +42,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: "babel-loader"
       }
     ]
   }

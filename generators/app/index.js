@@ -1,40 +1,36 @@
 var generators = require("yeoman-generator"),
   _ = require("lodash"),
-  util = require('util'),
-  path = require('path'),
-  yosay = require('yosay'),
-  chalk = require('chalk'),
-  mkdirp = require("mkdirp"),
-  config = require("../../config")();
+  yosay = require("yosay"),
+  chalk = require("chalk"),
+  config = require("../../config")()
 
 module.exports = generators.Base.extend({
 
   constructor: function() {
 
-    generators.Base.apply(this, arguments);
+    generators.Base.apply(this, arguments)
 
-    this.argument('appName', {
+    this.argument("appName", {
       type: String,
       required: false
-    });
-    this.appName = _.camelCase(this.appName);
+    })
+    this.appName = _.camelCase(this.appName)
 
-    var options = config.getAureliaOptions();
+    var options = config.getAureliaOptions()
     options.forEach(function(option) {
-      this.option(option.name, option.setup);
-    }.bind(this));
+      this.option(option.name, option.setup)
+    }.bind(this))
   },
 
   initializing: function() {
-    this.log(yosay("Welcome to web app generator!"));
+    this.log(yosay("Welcome to web app generator!"))
   },
 
   _frameworkOptionSpecified: function() {
-    return (this.options.angular || this.options.aurelia || this.options.react);
+    return (this.options.angular || this.options.aurelia || this.options.react)
   },
 
-  prompting: function() {
-  },
+  prompting: function() {},
 
   configuring: function() {
 
@@ -45,15 +41,15 @@ module.exports = generators.Base.extend({
   },
 
   writing: function() {
-    this.directory('app', './')
+    this.directory("app", "./")
   },
 
   install: function() {
-    this.spawnCommand('yarn');
+    this.spawnCommand("yarn")
   },
 
   end: function() {
-    this.log(chalk.green.bold("\n----->>> Mission Accomplished! <<<-----\n"));
+    this.log(chalk.green.bold("\n----->>> Mission Accomplished! <<<-----\n"))
   }
 
-});
+})
