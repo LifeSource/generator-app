@@ -1,7 +1,5 @@
 // Karma configuration
 // Generated on Mon Nov 28 2016 20:58:52 GMT+0800 (AWST)
-var webpackConfig = require("./webpack.config")
-
 module.exports = function(config) {
   config.set({
 
@@ -27,7 +25,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "src/**/*.test.js": ["webpack", "sourcemap"]
+      "src/**/*.test.js": []
     },
 
 
