@@ -1,9 +1,9 @@
-@mixin size ($width, $height) {
+@mixin size($width, $height) {
   width: $width;
-  height: $height
+  height: $height;
 }
 
-@mixin square ($dimension) {
+@mixin square($dimension) {
   @include size($dimension, $dimension);
 }
 
