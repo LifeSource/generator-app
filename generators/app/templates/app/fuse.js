@@ -4,11 +4,11 @@ const fuse = fb.FuseBox.init({
   homeDir: "src",
   outFile: "bundle.js",
   plugins: [
+    fb.BabelPlugin(),
     [
       fb.SassPlugin(),
       fb.CSSPlugin()
-    ],
-    fb.BabelPlugin()
+    ]
   ]
 })
 
