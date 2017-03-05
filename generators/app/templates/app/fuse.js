@@ -2,16 +2,16 @@ const fb = require("fuse-box")
 
 const fuse = fb.FuseBox.init({
   homeDir: "src",
-  outFile: "app.js",
+  outFile: "bundle.js",
   plugins: [
     [
       fb.SassPlugin(),
-      fb.CSSPlugin(),
-      fb.BabelPlugin()
-    ]
+      fb.CSSPlugin()
+    ],
+    fb.BabelPlugin()
   ]
 })
 
-fuse.devServer("> index.js", {
+fuse.devServer("> app.js", {
   port: 8000
 })
