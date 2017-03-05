@@ -12,6 +12,6 @@ const fuse = fb.FuseBox.init({
   ]
 })
 
-fuse.devServer(">app.js", {
+fuse.devServer("> index.js", {
   port: 8000
 })
