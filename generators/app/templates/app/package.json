@@ -6,7 +6,7 @@
     "prebuild": "npm run clean",
     "build": "npm-run-all build:* --silent",
     "watch:index": "pug index.pug --watch --out dist",
-    "start": "node fuse.js",
+    "start": "node fuse.js & browser-sync start --server --port 8000 --files '**/*.html'",
     "test": "karma start"
   },
   "devDependencies": {
