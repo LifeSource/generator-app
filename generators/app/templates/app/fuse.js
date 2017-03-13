@@ -2,7 +2,8 @@ const fb = require("fuse-box")
 
 const fuse = fb.FuseBox.init({
   homeDir: "src",
-  outFile: "bundle.js",
+  outFile: "dist/bundle.js",
+  sourcemaps: true,
   plugins: [
     fb.BabelPlugin(),
     [
@@ -12,6 +13,6 @@ const fuse = fb.FuseBox.init({
   ]
 })
 
-fuse.devServer("> app.js", {
+fuse.devServer(">index.jsx", {
   port: 8000
 })
