@@ -5,7 +5,9 @@
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "npm-run-all build:* --silent",
-    "start": "node fuse.js & browser-sync start --server --port 8000 --files '**/*.html'",
+    "serve": "browser-sync start --server --port 8000 --files '**/*.html' --logLevel silent",
+    "dev": "node fuse.js",
+    "start": "npm-run-all --parallel dev serve test",
     "test": "jest --watch"
   },
   "devDependencies": {
