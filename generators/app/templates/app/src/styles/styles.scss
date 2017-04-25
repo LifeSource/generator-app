@@ -1,9 +1,0 @@
-@charset "utf-8";
-@import "abstracts/module";         // variables, functions, mixins, placeholders
-@import "vendors/module";           // vendor specific, bootstrap, font-awesome etc.
-@import "base/module";              // resets and typography etc
-@import "layout/module";            // layout (navigation, grid, header, footer)
-@import "components/module";        // components (buttons, carousel, cover)
-@import "pages/module";             // pages (home, about, contact)
-@import "themes/module";            // themes (main, secondary)
-@import "hacks/hacks";              // CSS hacks
