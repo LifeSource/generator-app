@@ -10,8 +10,6 @@
     "test": "jest --watch"
   },
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
     "cpx": "^1.5.0",
     "jest": "^19.0.2",
     "rimraf": "^2.5.4",
