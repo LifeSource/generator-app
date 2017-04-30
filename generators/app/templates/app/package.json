@@ -2,19 +2,15 @@
   "name": "app",
   "version": "1.0.0",
   "scripts": {
-    "serve": "browser-sync start --server --port 8000 --files '**/*.html' --logLevel silent",
+    "serve": "browser-sync start --server --port 8000 --logLevel silent",
     "clean": "rimraf dist",
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -- -p 8000 & serve",
     "test": "jest --watch"
   },
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "cpx": "^1.5.0",
     "jest": "^19.0.2",
-    "rimraf": "^2.5.4",
     "yarn": "^0.16.1"
   },
   "dependencies": {
