@@ -2,18 +2,17 @@
   "name": "app",
   "version": "1.0.0",
   "scripts": {
-    "serve": "browser-sync start --server --port 8000 --files '**/*.html' --logLevel silent",
-    "clean": "rimraf dist",
     "dev": "next",
     "build": "next build",
     "start": "next start",
     "test": "jest --watch"
   },
   "devDependencies": {
-    "cpx": "^1.5.0",
     "jest": "^19.0.2",
-    "rimraf": "^2.5.4",
-    "yarn": "^0.16.1"
+    "yarn": "^0.16.1",
+    "@types/react": "^15.0.1",
+    "concurrently": "^3.1.0",
+    "typescript": "^2.1.5"
   },
   "dependencies": {
     "react": "^15.4.2",
