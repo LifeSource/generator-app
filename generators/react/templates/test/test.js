@@ -1,14 +1,3 @@
-describe("<%= moduleName %> Spec", function() {
-    
-    beforeEach(function() {
-        
-    });
-
-    afterEach(function() {
-        
-    });
-
-    it("should exist", function() {
-        
-    });
+test('should exist', () => {
+  expect(true).toBe(true);
 });

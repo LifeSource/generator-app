@@ -7,4 +7,4 @@ const <%= moduleName %> = () => {
   )
 }
 
-export <%= moduleName %>
+export {<%= moduleName %>}

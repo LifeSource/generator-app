@@ -6,11 +6,11 @@ module.exports = generators.NamedBase.extend({
     generators.NamedBase.apply(this, arguments);
 
     const options = {
-      com: { desc: 'Generate a react functional component.', type: String },
+      comp: { desc: 'Generate a react functional component.', type: String },
       all: { desc: 'Generate a react comp and test file.', type: String },
     };
 
-    this.option('mod', options.mod);
+    this.option('comp', options.comp);
     this.option('all', options.all);
   },
 
@@ -24,15 +24,17 @@ module.exports = generators.NamedBase.extend({
   },
 
   _generateComponent: function() {
-    this.fs.copyTpl(this.templatePath('component/comp.js'), this.destinationPath(`component/${this.name}.js`), {
-      moduleName: this.name,
+    const componentName = this._capitalizeFirstLetter(this.name);
+    this.fs.copyTpl(this.templatePath('component/comp.js'), this.destinationPath(`src/component/${componentName}.js`), {
+      moduleName: componentName,
       appName: this.config.get('appName'),
     });
   },
 
   _generateSpec: function() {
-    this.fs.copyTpl(this.templatePath('test/test.js'), this.destinationPath(`component/${this.name}.test.js`), {
-      moduleName: this._capitalizeFirstLetter(this.name),
+    const componentName = this._capitalizeFirstLetter(this.name);
+    this.fs.copyTpl(this.templatePath('test/test.js'), this.destinationPath(`src/component/${componentName}.test.js`), {
+      moduleName: componentName,
     });
   },
 
